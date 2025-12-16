@@ -1,0 +1,14 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import FeatureShowcase from "../components/FeatureShowcase";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="NoteGuard - Secure, AI-Powered Notes">
+	<main class="bg-[#050505]">
+		<Hero />
+		<FeatureShowcase client:load />
+	</main>
+	<Footer />
+</Layout>
