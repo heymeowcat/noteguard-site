@@ -7,7 +7,11 @@ const currentYear = new Date().getFullYear();
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div class="col-span-1 md:col-span-2">
                 <div class="flex items-center gap-3 mb-6">
-                    <img src="/icon.png" alt="NoteGuard" class="w-8 h-8" />
+                    <img
+                        src={`${import.meta.env.BASE_URL}/icon.png`}
+                        alt="NoteGuard"
+                        class="w-8 h-8"
+                    />
                     <span class="text-2xl font-bold text-white tracking-tight"
                         >NoteGuard</span
                     >
@@ -23,21 +27,25 @@ const currentYear = new Date().getFullYear();
                 <ul class="space-y-4">
                     <li>
                         <a
-                            href="#features"
+                            href={`${import.meta.env.BASE_URL}/#features`}
                             class="text-gray-400 hover:text-white transition-colors"
-                            >Features</a>
+                            >Features</a
+                        >
                     </li>
                     <li>
                         <a
-                            href="#"
+                            href={`${import.meta.env.BASE_URL}/#feature-security`}
                             class="text-gray-400 hover:text-white transition-colors"
-                            >Security</a>
+                            >Security</a
+                        >
                     </li>
                     <li>
                         <a
-                            href="#"
+                            href="https://play.google.com/store/apps/details?id=com.heymeowcat.list&hl=en"
+                            target="_blank"
                             class="text-gray-400 hover:text-white transition-colors"
-                            >Download</a>
+                            >Download</a
+                        >
                     </li>
                 </ul>
             </div>
@@ -47,22 +55,17 @@ const currentYear = new Date().getFullYear();
                 <ul class="space-y-4">
                     <li>
                         <a
-                            href="#"
+                            href={`${import.meta.env.BASE_URL}/privacy-policy`}
                             class="text-gray-400 hover:text-white transition-colors"
-                            >Privacy Policy</a>
+                            >Privacy Policy</a
+                        >
                     </li>
                     <li>
                         <a
-                            href="#"
+                            href={`${import.meta.env.BASE_URL}/terms-of-service`}
                             class="text-gray-400 hover:text-white transition-colors"
-                            >Terms of Service</a>
-                    </li>
-                    <li>
-                        <a
-                            href="https://github.com/heymeowcat/NoteGuard"
-                            target="_blank"
-                            class="text-gray-400 hover:text-white transition-colors"
-                            >GitHub</a>
+                            >Terms of Service</a
+                        >
                     </li>
                 </ul>
             </div>

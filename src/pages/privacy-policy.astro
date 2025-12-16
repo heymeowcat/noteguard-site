@@ -1,0 +1,136 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Privacy Policy - NoteGuard">
+    <main class="pt-20 pb-20">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="mb-12">
+                <a
+                    href={`${import.meta.env.BASE_URL}/`}
+                    class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center gap-2 mb-6"
+                >
+                    ← Back to Home
+                </a>
+                <h1
+                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4"
+                >
+                    Privacy Policy
+                </h1>
+                <p class="text-gray-400">Last updated: December 16, 2025</p>
+            </div>
+
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        Introduction
+                    </h2>
+                    <p class="mb-4">
+                        NoteGuard ("we," "our," or "us") is dedicated to
+                        protecting your privacy. This Privacy Policy outlines
+                        how your information is handled when you use the
+                        NoteGuard mobile application.
+                    </p>
+                    <p>
+                        <strong
+                            >Our core philosophy is simple: Your data belongs to
+                            you.</strong
+                        > NoteGuard is designed as an offline-first application with
+                        on-device AI processing. We do not collect, store, or transmit
+                        your personal notes or audio recordings to any cloud servers.
+                    </p>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        Data Collection and Usage
+                    </h2>
+                    <p class="mb-4">
+                        We do not collect any personal data. All data created
+                        within the app remains stored locally on your device.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 mb-4">
+                        <li>
+                            <strong>Notes and Content:</strong> Texts, images, and
+                            other content you create are stored in your device's internal
+                            storage and are encrypted where applicable.
+                        </li>
+                        <li>
+                            <strong>Audio Recordings:</strong> Voice notes are processed
+                            locally using on-device AI models (like Whisper) and are
+                            never uploaded for transcription.
+                        </li>
+                        <li>
+                            <strong>AI Processing:</strong> All AI features, including
+                            summarization and chat, run entirely on your device using
+                            local LLMs. No data is sent to external APIs (like OpenAI
+                            or Gemini) unless you explicitly configure a third-party
+                            extension (if available in future updates).
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        App Permissions
+                    </h2>
+                    <p class="mb-4">
+                        NoteGuard requires certain permissions to function
+                        correctly:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 mb-4">
+                        <li>
+                            <strong>Microphone:</strong> Required solely to record
+                            audio for voice notes and transcription. Audio data is
+                            processed in real-time on your device.
+                        </li>
+                        <li>
+                            <strong>Storage:</strong> Required to save your notes
+                            and backups to your device.
+                        </li>
+                        <li>
+                            <strong>Biometrics:</strong> Required if you choose to
+                            lock your notes or the app. Biometric authentication is
+                            handled by the Android system; we do not store your fingerprint
+                            or face data.
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        Third-Party Services
+                    </h2>
+                    <p class="mb-4">
+                        Since NoteGuard functions offline, we do not integrate
+                        with third-party tracking or analytics services that
+                        collect usage data.
+                    </p>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        Changes to This Policy
+                    </h2>
+                    <p class="mb-4">
+                        We may update our Privacy Policy from time to time. We
+                        will notify you of any changes by posting the new
+                        Privacy Policy on this page.
+                    </p>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-4">
+                        Contact Us
+                    </h2>
+                    <p>
+                        If you have any questions about this Privacy Policy,
+                        please contact us via our GitHub repository issues page.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>

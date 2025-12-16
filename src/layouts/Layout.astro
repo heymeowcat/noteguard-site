@@ -1,22 +1,88 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	structuredData?: object;
+}
+
+const {
+	title = "NoteGuard — Private, Offline Notes with On‑Device AI",
+	description = "NoteGuard is a privacy-first, purely offline note-taking app featuring on-device AI for transcription, summarization, and organization. Secure with military-grade encryption.",
+	structuredData,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(
+	`${import.meta.env.BASE_URL}/og-image.png`,
+	Astro.site,
+);
+---
+
 <!doctype html>
 <html lang="en" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<meta name="author" content="heymeowcat" />
 		<meta
-			name="description"
-			content="NoteGuard — Private, Offline Notes with On‑Device AI"
+			name="robots"
+			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 		/>
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<!-- Favicon -->
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href={`${import.meta.env.BASE_URL}/favicon.svg`}
+		/>
 		<meta name="generator" content={Astro.generator} />
-		<title>NoteGuard — Private, Offline Notes with On‑Device AI</title>
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:site_name" content="NoteGuard" />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content={canonicalURL} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+
+		<!-- Keywords -->
+		<meta
+			name="keywords"
+			content="noteguard, offline notes, private notes app, on-device ai, local llm android, whisper android offline, secure notes, encrypted notes, open source android notes, android voice notes, ai note taking, privacy focused app, heymeowcat"
+		/>
+
+		<title>{title}</title>
+
+		<!-- Structured Data -->
+		{
+			structuredData && (
+				<script
+					type="application/ld+json"
+					set:html={JSON.stringify(structuredData)}
+				/>
+			)
+		}
+
+		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
-		<link rel="stylesheet" href="/src/styles/global.css" />
 	</head>
 	<body
 		class="bg-[#0b1020] text-white antialiased font-sans selection:bg-indigo-500/30"
@@ -24,6 +90,7 @@
 		<slot />
 	</body>
 </html>
+
 <style is:global>
 	:root {
 		--font-outfit: "Outfit", sans-serif;

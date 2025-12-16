@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { 
   Search, Plus, Mic, Lock, Fingerprint, ChevronRight, Settings, Check, 
   Menu, X, Bot, Grid, ListFilter, Mic2, FileText, LayoutGrid, 
-  MoreVertical, ArrowUpDown, Smartphone, Tag, Clock, Database
+  MoreVertical, ArrowUpDown, Smartphone, Tag, Clock, Database, Download, Star
 } from "lucide-react";
 
 function cn(...inputs: (string | undefined | null | false)[]) {
@@ -85,7 +85,7 @@ const ScreenHome = () => (
     {/* App Header */}
     <div className="px-4 py-3 flex items-center justify-between z-10 border-b border-white/5">
         <div className="flex items-center gap-3">
-             <img src="/icon.png" alt="NoteGuard" className="w-8 h-6 object-contain" />
+             <img src={`${import.meta.env.BASE_URL}/icon.png`} alt="NoteGuard" className="w-8 h-6 object-contain" />
         </div>
         <div className="flex items-center gap-1">
              <HeaderAction icon={LayoutGrid} />
@@ -302,6 +302,110 @@ const ScreenVoice = () => (
     </div>
 );
 
+const ScreenAI = () => (
+    <div className="h-full w-full bg-[#121212] flex flex-col font-sans relative text-neutral-200 overflow-y-auto no-scrollbar">
+        <div className="p-4 flex items-center gap-4 border-b border-white/5 sticky top-0 bg-[#121212] z-10">
+            <ChevronRight className="w-6 h-6 rotate-180 text-neutral-400" />
+            <span className="text-lg font-bold text-white tracking-wide">AI Models</span>
+        </div>
+
+        <div className="p-4 pt-6 space-y-8 pb-20">
+            {/* Transcription Models */}
+            <div>
+                 <h4 className="text-purple-400 text-xs font-bold uppercase tracking-wider mb-4">Transcription Models (Whisper)</h4>
+                 <div className="space-y-3">
+                     {/* Whisper Tiny */}
+                     <div className="bg-[#1E1E1E] rounded-2xl p-4 border border-white/5 relative overflow-hidden group">
+                         <div className="flex justify-between items-start mb-2">
+                             <div>
+                                 <h3 className="text-[15px] font-bold text-white mb-2">Whisper Tiny EN</h3>
+                                 <div className="flex gap-2 mb-2">
+                                     <div className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-1">
+                                         <Mic className="w-2.5 h-2.5" /> Whisper
+                                     </div>
+                                     <div className="px-2 py-0.5 rounded-md bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold">Tiny</div>
+                                 </div>
+                             </div>
+                             <Download className="w-5 h-5 text-purple-400" />
+                         </div>
+                         <p className="text-[12px] text-neutral-500">Lightweight speech-to-text model (English)</p>
+                     </div>
+
+                     {/* Whisper Base */}
+                     <div className="bg-[#1E1E1E] rounded-2xl p-4 border border-white/5 relative overflow-hidden group">
+                         <div className="flex justify-between items-start mb-2">
+                             <div>
+                                 <h3 className="text-[15px] font-bold text-white mb-2">Whisper Base EN</h3>
+                                 <div className="flex gap-2 mb-2">
+                                     <div className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-1">
+                                         <Mic className="w-2.5 h-2.5" /> Whisper
+                                     </div>
+                                      <div className="px-2 py-0.5 rounded-md bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold">Base</div>
+                                 </div>
+                             </div>
+                             <Download className="w-5 h-5 text-purple-400" />
+                         </div>
+                         <p className="text-[12px] text-neutral-500">Higher quality speech-to-text (English)</p>
+                     </div>
+                 </div>
+            </div>
+
+             {/* LLMs */}
+            <div>
+                 <h4 className="text-purple-400 text-xs font-bold uppercase tracking-wider mb-2">Text Generation Models (LLMs)</h4>
+                 <p className="text-[11px] text-neutral-600 mb-4">Available to Download</p>
+                 
+                 <div className="space-y-3">
+                     {/* LLaMA */}
+                     <div className="bg-[#1E1E1E] rounded-2xl p-4 border border-white/5 relative overflow-hidden">
+                         <div className="flex justify-between items-start mb-3">
+                             <h3 className="text-[15px] font-bold text-white">LLaMA 3.2 - 1B - SpinQuant</h3>
+                             <Download className="w-5 h-5 text-purple-400" />
+                         </div>
+                         <div className="flex gap-2">
+                             <div className="px-2 py-1 rounded-lg bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold flex items-center gap-1">
+                                 <Database className="w-2.5 h-2.5" /> 1.24 B
+                             </div>
+                             <div className="px-2 py-1 rounded-lg bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold flex items-center gap-1">
+                                 <Download className="w-2.5 h-2.5" /> 1.14 GB
+                             </div>
+                              <div className="px-2 py-1 rounded-lg bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-1">
+                                 <Star className="w-2.5 h-2.5 fill-purple-300" /> Featured
+                             </div>
+                         </div>
+                     </div>
+                     
+                     {/* Phi 4 Mini */}
+                      <div className="bg-[#1E1E1E] rounded-2xl p-4 border border-white/5 relative overflow-hidden">
+                         <div className="flex justify-between items-start mb-3">
+                             <h3 className="text-[15px] font-bold text-white">Phi 4 Mini - 4B - Quantized</h3>
+                             <Download className="w-5 h-5 text-purple-400" />
+                         </div>
+                         <div className="flex gap-2">
+                             <div className="px-2 py-1 rounded-lg bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold flex items-center gap-1">
+                                 <Database className="w-2.5 h-2.5" /> 3.82 B
+                             </div>
+                             <div className="px-2 py-1 rounded-lg bg-[#2a2a2a] text-neutral-400 text-[10px] font-bold flex items-center gap-1">
+                                 <Download className="w-2.5 h-2.5" /> 4.63 GB
+                             </div>
+                              <div className="px-2 py-1 rounded-lg bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-1">
+                                 <Star className="w-2.5 h-2.5 fill-purple-300" /> Featured
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+
+        {/* FAB */}
+        <div className="absolute bottom-6 right-6 z-20">
+            <div className="w-14 h-14 bg-purple-400 rounded-full flex items-center justify-center shadow-lg shadow-purple-900/40 transform hover:scale-105 transition-transform active:scale-95 cursor-pointer text-black">
+                <Plus className="w-7 h-7 stroke-[2.5]" />
+            </div>
+        </div>
+    </div>
+);
+
 export default function FeatureShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeFeature, setActiveFeature] = useState(0);
@@ -421,7 +525,7 @@ export default function FeatureShowcase() {
                          animate={{ opacity: activeFeature === 3 ? 1 : 0 }}
                          transition={{ duration: 0.5 }}
                          className="absolute inset-0"
-                       ><ScreenHome /></motion.div>
+                       ><ScreenAI /></motion.div>
                   </div>
               </div>
           </motion.div>
@@ -462,6 +566,8 @@ export default function FeatureShowcase() {
       <style>{`
         .perspective-2000 { perspective: 2000px; }
         .transform-3d { transform-style: preserve-3d; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

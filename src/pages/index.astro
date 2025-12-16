@@ -3,12 +3,35 @@ import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import FeatureShowcase from "../components/FeatureShowcase";
 import Footer from "../components/Footer.astro";
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "SoftwareApplication",
+	name: "NoteGuard",
+	operatingSystem: "Android",
+	applicationCategory: "ProductivityApplication",
+	offers: {
+		"@type": "Offer",
+		price: "0",
+		priceCurrency: "USD",
+	},
+	description:
+		"Private, strictly offline notes app with on-device AI transcription and summarization.",
+	author: {
+		"@type": "Person",
+		name: "heymeowcat",
+	},
+};
 ---
 
-<Layout title="NoteGuard - Secure, AI-Powered Notes">
+<Layout
+	title="NoteGuard - Secure, AI-Powered Notes"
+	structuredData={structuredData}
+>
 	<main class="bg-[#050505]">
 		<Hero />
-		<FeatureShowcase client:load />
+		<section id="features">
+			<FeatureShowcase client:load />
+		</section>
 	</main>
 	<Footer />
 </Layout>
