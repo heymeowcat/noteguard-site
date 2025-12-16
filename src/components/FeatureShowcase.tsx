@@ -472,6 +472,7 @@ export default function FeatureShowcase() {
           </div>
 
           {/* 3D Phone Shell */}
+      {/* 3D Phone Shell */}
           <motion.div 
             style={{ 
                 rotateX: combinedRotateX,
@@ -479,7 +480,7 @@ export default function FeatureShowcase() {
                 scale,
                 z: 100
             }} 
-            className="relative transform-3d cursor-grab active:cursor-grabbing"
+            className="relative transform-3d cursor-grab active:cursor-grabbing scale-[0.85] md:scale-100 transition-transform duration-500"
           >
               <div 
                 className="relative w-[320px] h-[680px] bg-[#121212] rounded-[48px] shadow-2xl overflow-hidden border-[6px] border-[#2a2a2a]"
@@ -542,11 +543,12 @@ export default function FeatureShowcase() {
                     feature.align === 'left' ? "justify-start" : "justify-end"
                 )}
             >
-                <div className="max-w-lg pointer-events-auto">
+                <div className="max-w-lg pointer-events-auto w-full">
                      <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
+                        className="bg-black/30 backdrop-blur-xl p-8 rounded-3xl border border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.8)] md:bg-transparent md:backdrop-blur-none md:p-0 md:border-none md:shadow-none transition-all duration-300"
                      >
                         <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white tracking-tight leading-tight">
                             {feature.title}
