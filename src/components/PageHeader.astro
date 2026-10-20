@@ -1,0 +1,35 @@
+---
+interface Props {
+	eyebrow: string;
+	title: string;
+	lede?: string;
+	meta?: string;
+}
+
+const { eyebrow, title, lede, meta } = Astro.props;
+---
+
+<div class="pt-16 pb-14 md:pt-24 md:pb-20">
+	<div class="container mx-auto px-6 max-w-3xl">
+		<span class="eyebrow">{eyebrow}</span>
+		<h1
+			class="mt-4 text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.05]"
+		>
+			{title}
+		</h1>
+		{
+			lede && (
+				<p class="mt-6 text-lg md:text-xl text-zinc-400 leading-relaxed">
+					{lede}
+				</p>
+			)
+		}
+		{
+			meta && (
+				<p class="mt-6 text-sm text-[#9E9EA4] border-l-2 border-purple-400/40 pl-4">
+					{meta}
+				</p>
+			)
+		}
+	</div>
+</div>

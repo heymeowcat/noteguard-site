@@ -1,37 +1,88 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
 import FeatureShowcase from "../components/FeatureShowcase";
+import SecuritySection from "../components/SecuritySection.astro";
+import AISection from "../components/AISection.astro";
+import AndroidSection from "../components/AndroidSection.astro";
+import PrivacySection from "../components/PrivacySection.astro";
+import DownloadCta from "../components/DownloadCta.astro";
 import Footer from "../components/Footer.astro";
-const structuredData = {
+import { site } from "../lib/site";
+import { faqs } from "../lib/faq";
+
+const softwareData = {
 	"@context": "https://schema.org",
 	"@type": "SoftwareApplication",
-	name: "NoteGuard",
-	operatingSystem: "Android",
+	name: site.name,
 	applicationCategory: "ProductivityApplication",
+	applicationSubCategory: "Notes and writing",
+	operatingSystem: "Android",
+	softwareVersion: site.version,
+	downloadUrl: site.playUrl,
+	installUrl: site.playUrl,
+	packageName: site.packageName,
+	permissions: "RECORD_AUDIO, USE_BIOMETRIC, USE_FINGERPRINT",
+	description:
+		"Private, offline Android notes app. Notes are plain Markdown files in a folder you choose, locked notes are encrypted with the PIN you type, and every AI model runs on the device.",
+	featureList: [
+		"Notes stored as plain Markdown files in a folder you own",
+		"Obsidian-compatible vault with import and export",
+		"Note locking with PBKDF2-HMAC-SHA256 and AES-256 encryption",
+		"No stored PIN — the PIN is the key",
+		"App lock, auto-lock, brute-force throttle and screenshot prevention",
+		"Markdown editor with slash commands, callouts, tables and footnotes",
+		"Wiki links with backlinks and a quick switcher",
+		"Full-text, semantic and image search with advanced filters",
+		"Checklists with due dates, reminders and a vault-wide Tasks screen",
+		"Git-like version history with line diffs and one-tap restore",
+		"Recycle bin with 30-day retention",
+		"On-device AI chat, summaries, writing, transcription and image generation",
+		"Home-screen widget, share-sheet capture and notification-shade notes",
+		"Wide layout for tablets, foldables and ChromeOS",
+	],
+	author: {
+		"@type": "Person",
+		name: site.author,
+	},
 	offers: {
 		"@type": "Offer",
 		price: "0",
 		priceCurrency: "USD",
 	},
-	description:
-		"Private, strictly offline notes app with on-device AI transcription and summarization.",
-	author: {
-		"@type": "Person",
-		name: "heymeowcat",
-	},
+};
+
+const faqData = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	mainEntity: faqs.map((faq) => ({
+		"@type": "Question",
+		name: faq.q,
+		acceptedAnswer: {
+			"@type": "Answer",
+			text: faq.a,
+		},
+	})),
 };
 ---
 
 <Layout
-	title="NoteGuard - Secure, AI-Powered Notes"
-	structuredData={structuredData}
+	title="NoteGuard — Private, offline notes with on-device AI"
+	description="NoteGuard is a private Android notes app. Notes are plain Markdown files in a folder you choose, locked notes are encrypted with the PIN you type, and every AI model runs on your device. No account, no cloud, no tracking."
+	structuredData={[softwareData, faqData]}
 >
-	<main class="bg-[#050505]">
+	<main>
 		<Hero />
-		<section id="features">
+		<FeatureGrid />
+		<section id="features" class="scroll-mt-16">
 			<FeatureShowcase client:load />
 		</section>
+		<SecuritySection />
+		<AISection />
+		<AndroidSection />
+		<PrivacySection />
+		<DownloadCta />
 	</main>
 	<Footer />
 </Layout>

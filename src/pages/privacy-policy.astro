@@ -1,136 +1,235 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
 import Footer from "../components/Footer.astro";
+import { url } from "../lib/site";
 ---
 
-<Layout title="Privacy Policy - NoteGuard">
-    <main class="pt-20 pb-20">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <div class="mb-12">
-                <a
-                    href={`${import.meta.env.BASE_URL}/`}
-                    class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center gap-2 mb-6"
-                >
-                    ← Back to Home
-                </a>
-                <h1
-                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4"
-                >
-                    Privacy Policy
-                </h1>
-                <p class="text-gray-400">Last updated: December 16, 2025</p>
-            </div>
+<Layout
+	title="Privacy Policy - NoteGuard"
+	description="How NoteGuard handles your data: nothing is collected, nothing is uploaded, every AI model runs on your device, and the only network request is a web page you paste yourself."
+>
+	<main>
+		<PageHeader
+			eyebrow="Legal"
+			title="Privacy Policy"
+			lede="NoteGuard is built so that there is nothing to collect. This page explains what the app does with your data, which is very close to nothing."
+			meta="Last updated: November 10, 2026."
+		/>
 
-            <div class="prose prose-invert max-w-none text-gray-300">
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        Introduction
-                    </h2>
-                    <p class="mb-4">
-                        NoteGuard ("we," "our," or "us") is dedicated to
-                        protecting your privacy. This Privacy Policy outlines
-                        how your information is handled when you use the
-                        NoteGuard mobile application.
-                    </p>
-                    <p>
-                        <strong
-                            >Our core philosophy is simple: Your data belongs to
-                            you.</strong
-                        > NoteGuard is designed as an offline-first application with
-                        on-device AI processing. We do not collect, store, or transmit
-                        your personal notes or audio recordings to any cloud servers.
-                    </p>
-                </section>
+		<div class="container mx-auto px-6 max-w-3xl pb-24">
+			<div class="legal">
+				<section class="mb-10">
+					<h2>Introduction</h2>
+					<p>
+						NoteGuard ("we", "our" or "us") is a note-taking application
+						for Android. This Privacy Policy explains how information is
+						handled when you use the NoteGuard app and this website.
+					</p>
+					<p>
+						<strong>Our core position is simple: your data belongs to
+						you.</strong> NoteGuard is a local-first application. There
+						is no account to create, no server that receives your
+						notes, and no analytics service watching how you use the
+						app.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        Data Collection and Usage
-                    </h2>
-                    <p class="mb-4">
-                        We do not collect any personal data. All data created
-                        within the app remains stored locally on your device.
-                    </p>
-                    <ul class="list-disc pl-6 space-y-2 mb-4">
-                        <li>
-                            <strong>Notes and Content:</strong> Texts, images, and
-                            other content you create are stored in your device's internal
-                            storage and are encrypted where applicable.
-                        </li>
-                        <li>
-                            <strong>Audio Recordings:</strong> Voice notes are processed
-                            locally using on-device AI models (like Whisper) and are
-                            never uploaded for transcription.
-                        </li>
-                        <li>
-                            <strong>AI Processing:</strong> All AI features, including
-                            summarization and chat, run entirely on your device using
-                            local LLMs. No data is sent to external APIs (like OpenAI
-                            or Gemini) unless you explicitly configure a third-party
-                            extension (if available in future updates).
-                        </li>
-                    </ul>
-                </section>
+				<section class="mb-10">
+					<h2>What we collect</h2>
+					<p>
+						<strong>Nothing.</strong> We do not collect personal
+						information, usage data, analytics, crash reports,
+						advertising identifiers or device identifiers. There are
+						no third-party tracking or analytics SDKs in the app.
+					</p>
+					<p>
+						Your notes, attachments, checklists and settings are
+						written to storage on your own device. They are not
+						uploaded, and they are not transmitted to us, because
+						there is no account and no backend to transmit them to.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        App Permissions
-                    </h2>
-                    <p class="mb-4">
-                        NoteGuard requires certain permissions to function
-                        correctly:
-                    </p>
-                    <ul class="list-disc pl-6 space-y-2 mb-4">
-                        <li>
-                            <strong>Microphone:</strong> Required solely to record
-                            audio for voice notes and transcription. Audio data is
-                            processed in real-time on your device.
-                        </li>
-                        <li>
-                            <strong>Storage:</strong> Required to save your notes
-                            and backups to your device.
-                        </li>
-                        <li>
-                            <strong>Biometrics:</strong> Required if you choose to
-                            lock your notes or the app. Biometric authentication is
-                            handled by the Android system; we do not store your fingerprint
-                            or face data.
-                        </li>
-                    </ul>
-                </section>
+				<section class="mb-10">
+					<h2>Where your notes are stored</h2>
+					<p>
+						NoteGuard stores each note as a plain Markdown file, with
+						metadata in frontmatter, inside a vault folder that you
+						choose on your device. Notes that are not locked are
+						ordinary files and can be read by any app or tool with
+						access to that folder.
+					</p>
+					<p>
+						Android's automatic app-data backup is disabled for
+						NoteGuard, so your vault is not shipped to Google Drive
+						by the operating system. Backups are made by you, by
+						copying the vault folder or by exporting a file.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        Third-Party Services
-                    </h2>
-                    <p class="mb-4">
-                        Since NoteGuard functions offline, we do not integrate
-                        with third-party tracking or analytics services that
-                        collect usage data.
-                    </p>
-                </section>
+				<section class="mb-10">
+					<h2>Encryption and your PIN</h2>
+					<p>
+						When you lock a note, its text, checklist items and
+						attachments are encrypted before they reach the disk:
+					</p>
+					<ul>
+						<li>
+							The key is derived from the PIN you type using
+							<strong>PBKDF2-HMAC-SHA256</strong> with 210,000
+							rounds, one derivation per note.
+						</li>
+						<li>
+							Note text is encrypted with <strong>AES-256-CBC</strong>
+							and authenticated with an <strong>HMAC-SHA256</strong>
+							tag that is verified before anything is decrypted.
+						</li>
+						<li>
+							Photos, voice memos and drawings are sealed as
+							<strong>AES-256-GCM</strong> frames, so a note is
+							never only partly protected.
+						</li>
+						<li>
+							<strong>Your PIN is not stored anywhere.</strong> No
+							copy of it exists to compare against, so there is no
+							reset, no recovery code and no way for us — or for
+							anyone else — to recover a locked note without it.
+						</li>
+						<li>
+							Biometrics are a shortcut rather than the key. When
+							biometric unlock is enabled, a copy of the PIN is
+							held in the device's secure keystore so a
+							fingerprint or face can enter it for you. Turning
+							biometrics off deletes every such copy.
+						</li>
+						<li>
+							Nothing locked is shown anywhere — not in lists,
+							search, the home-screen widget, notifications or the
+							on-device AI — and a locked note's text is never sent
+							to a model, even one running on the same device.
+						</li>
+					</ul>
+					<p>
+						The app lock is separate from a note lock. Its PIN is
+						stored only as a PBKDF2 hash, verified in constant time,
+						behind a brute-force throttle that survives restarts.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        Changes to This Policy
-                    </h2>
-                    <p class="mb-4">
-                        We may update our Privacy Policy from time to time. We
-                        will notify you of any changes by posting the new
-                        Privacy Policy on this page.
-                    </p>
-                </section>
+				<section class="mb-10">
+					<h2>On-device AI and the one network request</h2>
+					<p>
+						Every AI feature — chat, summarisation, title generation,
+						writing, transcription, semantic search, image search
+						and image generation — runs on your device using models
+						you download from inside the app. Model files are
+						fetched from the model publisher's distribution hosting;
+						prompts, notes and images are never uploaded.
+					</p>
+					<p>
+						<strong
+							>The one exception: if you paste a web link and ask
+							the app to summarise it, that single page is
+							fetched.</strong
+						>
+						Nothing else is ever requested, and web search is
+						deliberately not a feature of the app.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        Contact Us
-                    </h2>
-                    <p>
-                        If you have any questions about this Privacy Policy,
-                        please contact us via our GitHub repository issues page.
-                    </p>
-                </section>
-            </div>
-        </div>
-    </main>
-    <Footer />
+				<section class="mb-10">
+					<h2>Permissions</h2>
+					<p>
+						NoteGuard asks for permissions only when you use the
+						feature that needs them:
+					</p>
+					<ul>
+						<li>
+							<strong>Microphone</strong> — to record voice memos and
+							to dictate. Recordings are processed on the device
+							and are never uploaded.
+						</li>
+						<li>
+							<strong>Camera and photos</strong> — to attach or take
+							photos and videos, and to scan a document.
+						</li>
+						<li>
+							<strong>Files and storage</strong> — to read and write
+							your vault folder, to import Markdown files and to
+							write exports.
+						</li>
+						<li>
+							<strong>Biometrics</strong> — only if you turn on
+							biometric unlock. Fingerprint and face data stay
+							with the device's secure hardware and are never
+							accessible to the app.
+						</li>
+						<li>
+							<strong>Notifications</strong> — for task reminders and
+							for a note you have chosen to stick to the
+							notification shade.
+						</li>
+					</ul>
+				</section>
+
+				<section class="mb-10">
+					<h2>Exports, backups and deletion</h2>
+					<p>
+						Exports and backups are created on your device and then
+						handed to you — a file you save, share or upload
+						wherever you like. That is where responsibility for the
+						copy sits: once a file leaves the app, it is governed by
+						whatever you shared it with.
+					</p>
+					<p>
+						Deleting a note moves it to the recycle bin, where it is
+						kept for 30 days before being deleted permanently.
+						Restoring it returns it to where it was.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>Children</h2>
+					<p>
+						NoteGuard is a general-purpose productivity tool and is
+						not directed at children. Because the app collects no
+						personal information at all, it does not knowingly
+						collect information from anyone, including children
+						under 13.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>Changes to this policy</h2>
+					<p>
+						This policy may be updated as the app changes. The
+						current version is always published on this page, with
+						the date it was last updated. Material changes will be
+						mentioned in the app's release notes.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>Contact</h2>
+					<p>
+						Questions about this policy, or a privacy problem you
+						want to report, can be raised as an issue on the
+						project's GitHub page at
+						<a href="https://github.com/heymeowcat" rel="noopener"
+							>github.com/heymeowcat</a
+						>.
+					</p>
+				</section>
+			</div>
+
+			<a
+				href={url("/")}
+				class="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors"
+			>
+				← Back to NoteGuard
+			</a>
+		</div>
+	</main>
+	<Footer />
 </Layout>

@@ -1,0 +1,103 @@
+---
+const groups = [
+	{
+		label: "Writing & editing",
+		color: "#60a5fa",
+		items: [
+			"Markdown editor with a formatting toolbar",
+			"Type / for headings, lists, callouts, tables and code",
+			"Obsidian-style callouts, pipe tables and footnotes",
+			"Wiki links with a backlinks and mentions panel",
+			"Find and replace, undo and redo",
+			"Long-press a block to change, move or duplicate it",
+		],
+	},
+	{
+		label: "Capture",
+		color: "#f472b6",
+		items: [
+			"Voice memos with real waveforms and on-device transcripts",
+			"Dictation while you write",
+			"Photos, video and drawings attached to a note",
+			"Scan a document, or pull the text out of an image",
+			"Share text, links or images from any other app",
+		],
+	},
+	{
+		label: "Organising",
+		color: "#a855f7",
+		items: [
+			"Folders, pinning and a palette of note colours",
+			"Grid and list layouts, with sorting per list",
+			"Inline #hashtags that stay out of the way",
+			"Checklists with nesting and per-note progress",
+			"Due dates, reminders and a vault-wide Tasks screen",
+			"A recycle bin that keeps deleted notes for 30 days",
+		],
+	},
+	{
+		label: "Finding & recovering",
+		color: "#34d399",
+		items: [
+			"Full-text search across the vault",
+			"Semantic search that finds a note by its meaning",
+			"Image search that finds a photo by describing it",
+			"Advanced filters for folders, dates, pinned and locked",
+			"A fuzzy quick switcher to jump to any note",
+			"Git-like version history with line diffs and restore",
+		],
+	},
+];
+---
+
+<section id="overview" class="relative py-24 md:py-32">
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(168,85,247,0.12),_transparent_60%)] pointer-events-none"
+	>
+	</div>
+
+	<div class="container mx-auto px-6 relative">
+		<div class="max-w-2xl">
+			<span class="eyebrow">The whole app</span>
+			<h2
+				class="mt-4 text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight"
+			>
+				Everything it does, in one place.
+			</h2>
+			<p class="mt-5 text-lg text-zinc-400 leading-relaxed">
+				NoteGuard is a full notes app, not a demo of one. No feature
+				here is a placeholder, and none of them needs a network
+				connection.
+			</p>
+		</div>
+
+		<div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+			{
+				groups.map((group) => (
+					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+						<div class="flex items-center gap-2.5">
+							<span
+								class="h-2 w-2 rounded-full shrink-0"
+								style={{ backgroundColor: group.color }}
+							/>
+							<h3 class="text-[15px] font-semibold text-white">
+								{group.label}
+							</h3>
+						</div>
+						<ul class="mt-5 space-y-3">
+							{group.items.map((item) => (
+								<li class="flex gap-3 text-[14.5px] text-zinc-400 leading-relaxed">
+									<span
+										class="mt-[9px] h-1 w-1 rounded-full shrink-0"
+										style={{ backgroundColor: group.color }}
+									/>
+									<span>{item}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>

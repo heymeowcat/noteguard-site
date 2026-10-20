@@ -1,0 +1,121 @@
+---
+import { url } from "../lib/site";
+
+const primitives = [
+	{
+		what: "Key derivation",
+		how: "PBKDF2-HMAC-SHA256",
+		detail: "210,000 rounds, run natively on Android and checked against a published answer before it is trusted, with a JavaScript fallback anywhere else.",
+	},
+	{
+		what: "Note text and checklists",
+		how: "AES-256-CBC + HMAC-SHA256",
+		detail: "Each frame carries its own salt and an authentication tag, compared in constant time before a single byte is decrypted.",
+	},
+	{
+		what: "Photos, voice memos, drawings",
+		how: "AES-256-GCM",
+		detail: "Sealed through the platform's own crypto, with the attachment key derived from the note key through a separate HMAC step.",
+	},
+	{
+		what: "The PIN itself",
+		how: "Never stored",
+		detail: "Nothing compares what you type against a saved copy. A forgotten PIN means the note cannot be read — which is the point.",
+	},
+	{
+		what: "Biometrics",
+		how: "A shortcut, not the key",
+		detail: "With biometrics on, a keystore copy of the PIN lets a fingerprint or face type it for you. Cancelling the prompt falls back to the PIN dialog.",
+	},
+	{
+		what: "A failed encryption",
+		how: "The save fails",
+		detail: "Fail-closed. Plaintext is never written for a note that was meant to be locked.",
+	},
+];
+---
+
+<section id="security" class="relative py-24 md:py-32">
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(52,211,153,0.12),_transparent_60%)] pointer-events-none"
+	>
+	</div>
+
+	<div class="container mx-auto px-6 relative">
+		<div class="max-w-2xl">
+			<span class="eyebrow">Security</span>
+			<h2
+				class="mt-4 text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight"
+			>
+				Encryption that does the work.
+			</h2>
+			<p class="mt-5 text-lg text-zinc-400 leading-relaxed">
+				Locking a note encrypts its text, its checklist items and every
+				attachment before they reach the disk. A note is never
+				half-locked, and a locked note shows nothing at all — not in
+				lists, search, the widget, notifications or the on-device AI.
+			</p>
+		</div>
+
+		<div class="mt-14 grid md:grid-cols-2 gap-5">
+			{
+				primitives.map((item) => (
+					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+						<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+							<span class="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9E9EA4]">
+								{item.what}
+							</span>
+							<span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-300">
+								{item.how}
+							</span>
+						</div>
+						<p class="mt-3 text-[15px] text-zinc-300 leading-relaxed">
+							{item.detail}
+						</p>
+					</div>
+				))
+			}
+		</div>
+
+		<!-- The app lock -->
+		<div
+			class="mt-6 rounded-3xl border border-white/8 bg-gradient-to-br from-emerald-500/[0.07] to-transparent p-8 md:p-10"
+		>
+			<div class="grid md:grid-cols-2 gap-10 items-center">
+				<div>
+					<h3 class="text-2xl font-bold text-white">
+						The whole app can be locked too.
+					</h3>
+					<p class="mt-4 text-[17px] text-zinc-300 leading-relaxed">
+						App Lock needs a PIN or biometrics on launch, with an
+						auto-lock timeout from thirty seconds to an hour. The PIN
+						is stored only as a PBKDF2 hash, checked in constant time,
+						behind a brute-force throttle that survives restarts.
+						While the app is backgrounded an opaque cover hides it
+						from the task switcher, and any note can block
+						screenshots while it is open.
+					</p>
+				</div>
+
+				<ul class="space-y-3.5">
+					{
+						[
+							"App Lock with PIN or biometrics",
+							"Auto-lock after 30 seconds to 1 hour",
+							"Brute-force throttle: 30s up to 5 minutes, and it survives a restart",
+							"Opaque cover while the app is in the background",
+							"Per-note screenshot prevention",
+							"No stored PIN, no stored key, no recovery copy",
+						].map((item) => (
+							<li class="flex gap-3 text-[15px] text-zinc-300">
+								<span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+
+	</div>
+</section>

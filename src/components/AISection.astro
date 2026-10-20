@@ -1,0 +1,131 @@
+---
+import { models } from "../lib/site";
+
+const groups = [
+	{
+		id: "text",
+		name: "Writing and chat",
+		blurb:
+			"Chat with your notes, summarise, draft and generate titles with a local language model.",
+		items: models.text,
+	},
+	{
+		id: "transcription",
+		name: "Voice transcription",
+		blurb:
+			"Dictate and transcribe voice memos on the device, in English or in 99+ other languages.",
+		items: models.transcription,
+	},
+	{
+		id: "embeddings",
+		name: "Search by meaning",
+		blurb:
+			"Text embeddings that find a note by its concept rather than its keywords.",
+		items: models.embeddings,
+	},
+	{
+		id: "image-embeddings",
+		name: "Search in images",
+		blurb:
+			"An image encoder that finds a photo in your notes by describing what is in it.",
+		items: models.imageEmbeddings,
+	},
+	{
+		id: "image-generation",
+		name: "Image generation",
+		blurb:
+			"512×512 pictures made from a text prompt, entirely on the phone, one at a time.",
+		items: models.imageGeneration,
+	},
+];
+---
+
+<section id="ai" class="relative py-24 md:py-32">
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(45,212,191,0.12),_transparent_60%)] pointer-events-none"
+	>
+	</div>
+
+	<div class="container mx-auto px-6 relative">
+		<div class="max-w-2xl">
+			<span class="eyebrow">On-device AI</span>
+			<h2
+				class="mt-4 text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight"
+			>
+				There is no cloud to reach.
+			</h2>
+			<p class="mt-5 text-lg text-zinc-400 leading-relaxed">
+				Every model runs on your phone. You download the ones you want
+				from inside the app, nothing is uploaded, and web search is
+				deliberately not part of it. The single time NoteGuard touches
+				the network is when you paste a link and ask it to summarise
+				that page.
+			</p>
+		</div>
+
+		<div class="mt-14 grid md:grid-cols-2 gap-5">
+			{
+				groups.map((group) => (
+					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+						<h3 class="text-lg font-semibold text-white">{group.name}</h3>
+						<p class="mt-1.5 text-[14px] text-zinc-400 leading-relaxed">
+							{group.blurb}
+						</p>
+						<ul class="mt-4 space-y-1.5">
+							{group.items.map((item: any) => (
+								<li class="flex items-center gap-2.5 text-[14px] text-zinc-300">
+									<span class="h-1 w-1 rounded-full bg-teal-400/70 shrink-0" />
+									<span class="truncate">{item.name}</span>
+									<span class="ml-auto shrink-0 text-[12px] text-[#9E9EA4] tabular-nums">
+										{item.steps ? `${item.steps} · ` : ""}
+										{item.size}
+									</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+
+		<!-- Honest about the cost -->
+		<div
+			class="mt-6 rounded-3xl border border-amber-400/20 bg-amber-400/[0.05] p-8 md:p-10"
+		>
+			<h3 class="text-2xl font-bold text-white">
+				On-device means on-device.
+			</h3>
+			<div class="mt-5 grid md:grid-cols-2 gap-x-10 gap-y-4">
+				<ul class="space-y-3.5">
+					{
+						[
+							"Models are downloaded on demand. The largest image export is 3.8 GB.",
+							"Image generation runs one picture at a time. The four-step exports take well over a minute each on a phone.",
+							"Before a model loads, the app estimates its peak memory and warns you if it may not fit — an Android memory kill cannot be caught in JavaScript, so the warning is the only useful one.",
+						].map((item) => (
+							<li class="flex gap-3 text-[15px] text-zinc-300">
+								<span class="mt-2 h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+				<ul class="space-y-3.5">
+					{
+						[
+							"Nothing heavy loads until something asks for it.",
+							"Downloads resume instead of restarting, and show progress in a system notification you can cancel.",
+							"A model is released from memory as soon as it has written its output.",
+							"A locked note's text never reaches a model, even one running on the same device.",
+						].map((item) => (
+							<li class="flex gap-3 text-[15px] text-zinc-300">
+								<span class="mt-2 h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,92 +1,172 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
 import Footer from "../components/Footer.astro";
+import { url } from "../lib/site";
 ---
 
-<Layout title="Terms of Service - NoteGuard">
-    <main class="pt-20 pb-20">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <div class="mb-12">
-                <a
-                    href={`${import.meta.env.BASE_URL}/`}
-                    class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center gap-2 mb-6"
-                >
-                    ← Back to Home
-                </a>
-                <h1
-                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4"
-                >
-                    Terms of Service
-                </h1>
-                <p class="text-gray-400">Last updated: December 16, 2025</p>
-            </div>
+<Layout
+	title="Terms of Service - NoteGuard"
+	description="The terms that apply when you download and use NoteGuard, the private, offline notes app for Android."
+>
+	<main>
+		<PageHeader
+			eyebrow="Legal"
+			title="Terms of Service"
+			lede="These terms cover the NoteGuard app and this website. They are short because there is not much to say about an app that has no account and sends nothing anywhere."
+			meta="Last updated: November 10, 2026."
+		/>
 
-            <div class="prose prose-invert max-w-none text-gray-300">
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        1. Agreement to Terms
-                    </h2>
-                    <p class="mb-4">
-                        By downloading or using NoteGuard, these terms will
-                        automatically apply to you – you should make sure
-                        therefore that you read them carefully before using the
-                        app.
-                    </p>
-                </section>
+		<div class="container mx-auto px-6 max-w-3xl pb-24">
+			<div class="legal">
+				<section class="mb-10">
+					<h2>1. Agreement to these terms</h2>
+					<p>
+						By downloading or using NoteGuard, you agree to these terms.
+						Please read them before you use the app. If you do not agree
+						with them, do not use the app — and if you already do, you
+						can simply uninstall it and delete your vault folder.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        2. Usage
-                    </h2>
-                    <p class="mb-4">
-                        NoteGuard is an open-source application provided for
-                        free. You are not allowed to copy or modify the app, any
-                        part of the app, or our trademarks in any way. You agree
-                        to use the app only for lawful purposes.
-                    </p>
-                </section>
+				<section class="mb-10">
+					<h2>2. The service</h2>
+					<p>
+						NoteGuard is a note-taking application for Android, provided
+						free of charge. It is not a hosted service: there is no
+						account, no subscription tier, and no server that holds
+						your notes. The app is provided as-is, with the features
+						described on this site and in the release notes.
+					</p>
+					<p>
+						You may use the app for any lawful purpose. You may not
+						redistribute it, use it to break the law, or attempt to
+						remove or alter the protections described in the security
+						section of this site.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        3. Data Ownership
-                    </h2>
-                    <p class="mb-4">
-                        You retain all rights and ownership of the notes, audio,
-                        and content you create using NoteGuard. Since NoteGuard
-                        is a local-only app, you are responsible for backing up
-                        your data. We are not responsible for any data loss
-                        resulting from device failure, app uninstallation, or
-                        lost backups.
-                    </p>
-                </section>
+				<section class="mb-10">
+					<h2>3. Your content</h2>
+					<p>
+						You retain all rights and ownership of the notes, audio,
+						images and other content you create in NoteGuard. We claim
+						no licence over it and receive no copy of it.
+					</p>
+					<p>
+						Because NoteGuard is a local-only app, you are responsible
+						for backing up your data. We are not responsible for data
+						loss caused by device failure, uninstalling the app,
+						deleting the vault folder, or a lost backup. Back up by
+						copying your vault folder, and keep a copy somewhere you
+						trust.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        4. Disclaimers
-                    </h2>
-                    <p class="mb-4">
-                        The app is provided "as is" and "as available" without
-                        any warranties of any kind. We do not warrant that the
-                        app will be uninterrupted or error-free. The AI models
-                        used in the app are probabilistic and may generate
-                        incorrect or misleading information. You should verify
-                        any critical information generated by the AI.
-                    </p>
-                </section>
+				<section class="mb-10">
+					<h2>4. Locked notes and your PIN</h2>
+					<p>
+						When you lock a note, the note is encrypted with a key
+						derived from the PIN you type, and <strong
+							>the PIN is not stored anywhere</strong
+						>. There is no stored copy to compare against, no recovery
+						code and no reset.
+					</p>
+					<p>
+						<strong
+							>You are solely responsible for remembering the PIN
+							for a locked note.</strong
+						>
+						A forgotten PIN means the note cannot be read — not by you,
+						not by us, and not by anyone else. We cannot recover it,
+						because we never had it. The same applies to a locked note
+						whose PIN is known only to you and has been lost.
+					</p>
+				</section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold text-white mb-4">
-                        5. Changes to Terms
-                    </h2>
-                    <p class="mb-4">
-                        We reserve the right to modify these terms at any time.
-                        Your continued use of the application following the
-                        posting of changes will mean that you accept and agree
-                        to the changes.
-                    </p>
-                </section>
-            </div>
-        </div>
-    </main>
-    <Footer />
+				<section class="mb-10">
+					<h2>5. On-device AI and downloaded models</h2>
+					<p>
+						NoteGuard's AI features run entirely on your device using
+						model files that you download from inside the app. Model
+						files are fetched from the model publishers' distribution
+						hosting, which is the only third-party download the app
+						performs, along with a web page you choose to paste and
+						ask it to summarise.
+					</p>
+					<p>
+						AI output is produced by probabilistic models. It can be
+						inaccurate, out of date, or plainly wrong. Verify anything
+						important before you rely on it, and do not use it as the
+						sole basis for a decision. Image generation in particular
+						is slow and experimental.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>6. Third-party content</h2>
+					<p>
+						Notes you import, links you paste and pages you fetch are
+						subject to the rights and terms of whoever published
+						them. You are responsible for how you use that content,
+						and for any export or share you make of it.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>7. No warranty</h2>
+					<p>
+						The app is provided "as is" and "as available", without
+						warranty of any kind, express or implied. We do not
+						warrant that it will be uninterrupted, error-free, or
+						that it will never lose data. Encryption and security
+						features are described honestly, including their limits,
+						but no system can promise absolute security.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>8. Limitation of liability</h2>
+					<p>
+						To the fullest extent permitted by law, we are not liable
+						for any indirect, incidental, special or consequential
+						loss arising from your use of NoteGuard, including lost
+						notes, lost data, lost profits, or a lost PIN. Nothing in
+						these terms limits liability that cannot lawfully be
+						limited.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>9. Changes</h2>
+					<p>
+						We may update these terms, and we may update the app, at
+						any time. The current terms are always published on this
+						page with the date they were last updated. Your continued
+						use of the app after a change means you accept the
+						updated terms.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2>10. Contact</h2>
+					<p>
+						Questions about these terms can be raised as an issue on
+						the project's GitHub page at
+						<a href="https://github.com/heymeowcat" rel="noopener"
+							>github.com/heymeowcat</a
+						>.
+					</p>
+				</section>
+			</div>
+
+			<a
+				href={url("/")}
+				class="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors"
+			>
+				← Back to NoteGuard
+			</a>
+		</div>
+	</main>
+	<Footer />
 </Layout>

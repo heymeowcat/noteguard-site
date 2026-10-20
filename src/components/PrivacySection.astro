@@ -1,0 +1,95 @@
+---
+import { faqs } from "../lib/faq";
+---
+
+<section id="privacy" class="relative py-24 md:py-32">
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(168,85,247,0.12),_transparent_60%)] pointer-events-none"
+	>
+	</div>
+
+	<div class="container mx-auto px-6 relative">
+		<div class="grid lg:grid-cols-[1fr_1.1fr] gap-14 items-start">
+			<div>
+				<span class="eyebrow">Privacy</span>
+				<h2
+					class="mt-4 text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight"
+				>
+					Private by architecture, not by promise.
+				</h2>
+				<p class="mt-5 text-lg text-zinc-400 leading-relaxed">
+					There is no server holding your writing, because there is no
+					server. Privacy here is not a setting you can turn on — it is
+					a property of how the app is built.
+				</p>
+
+				<div class="mt-9 space-y-5">
+					{
+						[
+							{
+								title: "No account, no sign-in",
+								body: "Nothing to register for, and no email address to hand over.",
+							},
+							{
+								title: "No analytics, no telemetry, no ads",
+								body: "No usage tracking of any kind, and no third-party SDK that would collect it.",
+							},
+							{
+								title: "No cloud sync",
+								body: "Your notes never leave the device unless you move them yourself.",
+							},
+							{
+								title: "Android auto-backup is off",
+								body: "The vault is not quietly shipped to Google Drive by the system.",
+							},
+							{
+								title: "One honest exception",
+								body: "Paste a link and ask for a summary, and that one page is fetched. Nothing else is ever requested.",
+							},
+						].map((item) => (
+							<div class="flex gap-4">
+								<span class="mt-2.5 h-1.5 w-1.5 rounded-full bg-purple-400 shrink-0" />
+								<div>
+									<h3 class="text-[16px] font-semibold text-white">
+										{item.title}
+									</h3>
+									<p class="mt-1 text-[15px] text-zinc-400 leading-relaxed">
+										{item.body}
+									</p>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+
+			<!-- The FAQ -->
+			<div id="faq" class="scroll-mt-24">
+				<span class="eyebrow">FAQ</span>
+				<h3 class="mt-4 text-3xl font-bold text-white tracking-tight">
+					Questions worth asking.
+				</h3>
+
+				<div class="mt-7 divide-y divide-white/8 border-y border-white/8">
+					{
+						faqs.map((faq) => (
+							<details class="group py-5">
+								<summary class="flex items-start gap-4 cursor-pointer list-none select-none">
+									<span class="text-[17px] font-semibold text-white flex-1">
+										{faq.q}
+									</span>
+									<span class="mt-1 text-purple-300 text-xl leading-none group-open:rotate-45 transition-transform">
+										+
+									</span>
+								</summary>
+								<p class="mt-3 text-[15px] text-zinc-400 leading-relaxed pr-8">
+									{faq.a}
+								</p>
+							</details>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

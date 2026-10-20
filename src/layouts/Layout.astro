@@ -1,23 +1,37 @@
 ---
 import "../styles/global.css";
+import { site, url, home } from "../lib/site";
 
 interface Props {
 	title?: string;
 	description?: string;
-	structuredData?: object;
+	structuredData?: object | object[];
+	/** Hide the site navigation on pages that provide their own. */
+	hideNav?: boolean;
+	ogImageAlt?: string;
 }
 
 const {
-	title = "NoteGuard — Private, Offline Notes with On‑Device AI",
-	description = "NoteGuard is a privacy-first, purely offline note-taking app featuring on-device AI for transcription, summarization, and organization. Secure with military-grade encryption.",
+	title = "NoteGuard — Private, offline notes with on-device AI",
+	description = "NoteGuard is a private Android notes app. Notes are plain Markdown files in a folder you choose, locked notes are encrypted with the PIN you type, and every AI model runs on your device. No account, no cloud, no tracking.",
 	structuredData,
+	hideNav = false,
+	ogImageAlt = "NoteGuard — private, offline notes for Android",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(
-	`${import.meta.env.BASE_URL}/og-image.png`,
+/* The sitemap lists every page with a trailing slash, so the canonical
+   URLs match it rather than pointing at a redirect. */
+const canonicalURL = new URL(
+	Astro.url.pathname.replace(/\/+$/, "") + "/",
 	Astro.site,
 );
+const ogImageURL = new URL(url("/og-image.png"), Astro.site);
+const isHome = Astro.url.pathname.replace(/\/$/, "") === url("").replace(/\/$/, "");
+const jsonLd = structuredData
+	? Array.isArray(structuredData)
+		? structuredData
+		: [structuredData]
+	: [];
 ---
 
 <!doctype html>
@@ -26,21 +40,26 @@ const ogImageURL = new URL(
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content={description} />
-		<meta name="author" content="heymeowcat" />
+		<meta name="author" content={site.author} />
 		<meta
 			name="robots"
 			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 		/>
 		<link rel="canonical" href={canonicalURL} />
-		<link rel="sitemap" href="/sitemap-index.xml" />
+		<link rel="sitemap" href={url("/sitemap-index.xml")} />
 
-		<!-- Favicon -->
+		<!-- Icons -->
 		<link
 			rel="icon"
 			type="image/svg+xml"
-			href={`${import.meta.env.BASE_URL}/favicon.svg`}
+			href={url("/favicon.svg")}
 		/>
+		<link rel="apple-touch-icon" href={url("/icon.png")} />
+		<meta name="theme-color" content="#050505" />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="application-name" content={site.name} />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content={site.name} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -48,8 +67,11 @@ const ogImageURL = new URL(
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageURL} />
-		<meta property="og:site_name" content="NoteGuard" />
-		<meta property="og:locale" content="en_US" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogImageAlt} />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:locale" content={site.language.replace("-", "_")} />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
@@ -57,45 +79,92 @@ const ogImageURL = new URL(
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageURL} />
+		<meta name="twitter:image:alt" content={ogImageAlt} />
 
 		<!-- Keywords -->
 		<meta
 			name="keywords"
-			content="noteguard, offline notes, private notes app, on-device ai, local llm android, whisper android offline, secure notes, encrypted notes, open source android notes, android voice notes, ai note taking, privacy focused app, heymeowcat"
+			content="noteguard, offline notes, private notes app, encrypted notes android, markdown notes app, obsidian vault, on-device ai, local llm android, whisper offline, semantic search, note lock pin, ai note taking, privacy focused app, version history notes, task reminders notes, heymeowcat"
 		/>
 
 		<title>{title}</title>
 
-		<!-- Structured Data -->
+		<!-- Structured data -->
 		{
-			structuredData && (
+			jsonLd.map((entry) => (
 				<script
 					type="application/ld+json"
-					set:html={JSON.stringify(structuredData)}
+					set:html={JSON.stringify(entry)}
 				/>
-			)
+			))
 		}
 
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
 			rel="stylesheet"
 		/>
 	</head>
-	<body
-		class="bg-[#0b1020] text-white antialiased font-sans selection:bg-indigo-500/30"
-	>
+	<body class="bg-ink text-white antialiased font-display">
+		{
+			!hideNav && (
+				<header class="sticky top-0 z-50 border-b border-white/5 bg-ink/80 backdrop-blur-xl">
+					<nav
+						class="container mx-auto px-6 h-16 flex items-center justify-between"
+						aria-label="Main"
+					>
+						<a href={home()} class="flex items-center gap-2.5 shrink-0">
+							<img
+								src={url("/icon.png")}
+								alt=""
+								width="28"
+								height="24"
+								class="w-7 h-auto rounded-md"
+							/>
+							<span class="font-bold tracking-tight text-white">NoteGuard</span>
+						</a>
+
+						<ul class="hidden md:flex items-center gap-7 text-sm text-zinc-400">
+							<li>
+								<a
+									href={isHome ? "#features" : home("features")}
+									class="hover:text-white transition-colors">Features</a
+								>
+							</li>
+							<li>
+								<a
+									href={isHome ? "#security" : home("security")}
+									class="hover:text-white transition-colors">Security</a
+								>
+							</li>
+							<li>
+								<a
+									href={isHome ? "#ai" : home("ai")}
+									class="hover:text-white transition-colors">On-device AI</a
+								>
+							</li>
+							<li>
+								<a
+									href={url("/whats-new")}
+									class="hover:text-white transition-colors">Release notes</a
+								>
+							</li>
+						</ul>
+
+						<a
+							href={site.playUrl}
+							target="_blank"
+							rel="noopener"
+							class="text-sm font-semibold bg-white text-black rounded-full px-4 py-2 hover:bg-purple-200 transition-colors"
+						>
+							Get the app
+						</a>
+					</nav>
+				</header>
+			)
+		}
 		<slot />
 	</body>
 </html>
-
-<style is:global>
-	:root {
-		--font-outfit: "Outfit", sans-serif;
-	}
-	html {
-		font-family: var(--font-outfit);
-	}
-</style>

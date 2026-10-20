@@ -1,0 +1,221 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import DownloadCta from "../components/DownloadCta.astro";
+import Footer from "../components/Footer.astro";
+import { site, url } from "../lib/site";
+
+const sections = [
+	{
+		id: "locking",
+		title: "Locking and encryption",
+		lede:
+			"The rule in NoteGuard is simple: your PIN is the key, and nothing keeps a copy of it. That is what makes a locked note safe to move, and what makes a forgotten PIN a real loss rather than a support ticket.",
+		items: [
+			"Locking a note encrypts it with the PIN you type. A forgotten PIN means the note cannot be read, and a vault copied off the phone is useless without it.",
+			"Text and attachments are both encrypted. Note text and checklist items use an AES-256-CBC frame carrying its own salt and an HMAC-SHA256 tag, checked with a constant-time comparison before a byte is decrypted. Photos, voice memos and drawings are sealed as AES-256-GCM frames, so a note is never half-locked.",
+			"PBKDF2-HMAC-SHA256, 210,000 rounds, with the body and every attachment sharing the note's salt — one derivation per note. On Android the derivation runs in a native module whose first use is verified against a published PBKDF2 answer, falling back to JavaScript on any disagreement, so a faulty native path can only be slower, never unreadable.",
+			"Fail-closed. If encryption fails, the save fails: plaintext is never written for a note that is meant to be locked.",
+			"Locking takes seconds and never blocks the app. Lock, unlock and bulk lock/unlock run as background jobs, with progress on the note's own card and an ongoing notification while they run.",
+			"Biometrics unlock, they do not encrypt. With biometrics on, a keystore copy of the PIN lets a fingerprint or face enter it for you; cancelling the device prompt falls back to the PIN dialog. Turning biometrics off deletes every copy, and the notes still open with their PINs.",
+			"Nothing locked shows its text anywhere — lists, cards, search, sorting, related notes, the widget, notifications and on-device AI.",
+			"Vault transfer. Because the note's own frames are the only record of the key, a locked note moved to a new phone opens with the same PIN.",
+			"App lock hardened: PBKDF2-hashed PIN, constant-time verification, a brute-force throttle that survives restarts, per-note screenshot prevention, and an opaque cover while the app is backgrounded.",
+		],
+	},
+	{
+		id: "vault",
+		title: "The vault",
+		lede:
+			"Notes are files. There is no database holding them and no account owning them — just a folder on your device that opens in any Markdown tool.",
+		items: [
+			"Notes are plain Markdown files in a folder you choose, with metadata in frontmatter. The folder opens directly in Obsidian and similar tools, and backing up means copying it.",
+			"Storage is built around the folder: SAF folder access, one directory per note, atomic writes that never shorten a file in place, and recovery from a damaged write.",
+			"A note's own folder is never listed as a folder. The vault scan skips note folders — including the \" (1)\" copies Android makes when a write lands twice — and leaves the note and its directory untouched.",
+		],
+	},
+	{
+		id: "history",
+		title: "Recycle bin and version history",
+		items: [
+			"Recycle bin with 30-day retention. Deleting a folder takes its notes with it; restore or purge as a whole.",
+			"Git-like version history per note: content-addressed commits, parent links, line diffs, manual versions and one-tap restore, capped at 500 commits per note. Locked notes keep ciphertext in history, and history travels inside backups.",
+		],
+	},
+	{
+		id: "editor",
+		title: "The editor",
+		lede: "A Markdown editor written for people who write in Markdown all day.",
+		items: [
+			"Formatting toolbar, a `/` command menu, long-press a block to turn it into another type or move, duplicate and delete it, smart Enter that continues lists and quotes and exits empty items, and undo/redo.",
+			"Rich blocks: Obsidian-style callouts, pipe tables and footnotes.",
+			"Wiki links `[[Note title]]` with a links and backlinks panel, an unlinked mentions finder, and a fuzzy quick switcher.",
+			"Find and replace inside a note.",
+			"Voice memos use a compact pill player: an outlined play/pause button, a waveform sampled from the memo itself so two recordings never share a shape, a progress fill while it plays, tap-to-seek and the duration. On-device transcription is one tap away when a transcript exists.",
+			"No native alert dialogs anywhere in the note flow — every prompt is an in-app sheet in the app's own style.",
+		],
+	},
+	{
+		id: "organisation",
+		title: "Organisation, search and tasks",
+		items: [
+			"Folders, pinning, note colours, grid and list layouts, and per-list sorting.",
+			"Search screen with full-text, semantic (\"by meaning\") and image search, plus advanced filters for folders, dates and pinned or locked state.",
+			"Tags are inline `#hashtags` only, rendered muted, and searchable like any other word.",
+			"Checklists with nesting, tick-from-the-line, per-note progress and a vault-wide Tasks screen; due dates `📅` and reminders `⏰` with a notification per task and Overdue / Today / Tomorrow / Next 7 days sections.",
+		],
+	},
+	{
+		id: "ai",
+		title: "On-device AI",
+		lede:
+			"All AI runs on the device: local LLMs for chat, summaries, titles and writing, Whisper for dictation and voice memos, MiniLM vectors for semantic search, CLIP for image search, and local image generation.",
+		items: [
+			"Web search is not part of it. The only network request the app makes is fetching a page you explicitly paste as a link.",
+			"Model manager: models grouped by what they do, one shared picker style, system-notification download progress with a cancel action, downloads that resume instead of restarting, and files released after each generation.",
+			"Image generation: SDXS 512 (DreamShaper) in a single denoise, or EpiCRealism 512 (photoreal) and Counterfeit V3.0 512 (anime and illustration), both SD 1.5 distilled to Hyper-SD and walked through the four-step TCD schedule. One picture at a time, and the model is not kept in memory between pictures.",
+			"A model that may not fit warns before it is loaded. Rows show \"Too large\" or \"May not fit\" when the model's estimated peak memory is close to or above what the device can give, and downloading, selecting or running one asks first.",
+			"Nothing heavy loads until something asks for it, and the app waits for its database before it draws.",
+		],
+	},
+	{
+		id: "capture",
+		title: "Capture, import and backup",
+		items: [
+			"Share-sheet capture: send text, links or images from any app and NoteGuard opens Quick Add prefilled; saving embeds the images in the note.",
+			"Open `.md` and `.txt` files from other apps.",
+			"Markdown and Obsidian import: single files or a zipped vault; frontmatter tags, colours and pinned state carry over, and the zip's top-level folders become folders. Duplicate, locked and trashed notes are skipped, so running an import twice is safe.",
+			"Encrypted export/import as JSON, optionally protected with a PIN. Locked notes stay encrypted.",
+		],
+	},
+	{
+		id: "android",
+		title: "Android extras",
+		items: [
+			"Home-screen widget: pinned and recent notes plus a New note shortcut, with deep-link taps. Locked and deleted notes are never mirrored to it.",
+			"Stick a note to the notification shade, with a preview written for the shade that tracks the note as it changes.",
+			"Resume where you left off: the app reopens the note you were in, at the place you stopped.",
+			"Wide layout for tablets, foldables and landscape: the folders rail and the note list sit beside the editor with note tabs, and phones keep the one-screen-at-a-time flow.",
+		],
+	},
+	{
+		id: "tablets",
+		title: "Tablets and ChromeOS",
+		items: [
+			"Layout follows the window, not the device. The app uses the Material 3 size classes (compact under 600pt, medium 600–839, expanded 840–1199, large 1200+) and re-flows live, so dragging a ChromeOS window across a breakpoint changes the layout without a relaunch or a lost note.",
+			"Both sidebars can be put away. On a wide note screen the header hides the note list and folders together, or collapses just the folders rail. The choice survives moving between notes and the next launch.",
+			"Nothing stretches. The editor is capped at a 760pt reading measure, lists and forms centre at 820pt, AI Chat keeps a conversation-width column, and in-app dialogs are 400pt cards centred in the window.",
+			"ChromeOS: opens in a tablet-sized window, no longer requires a touchscreen, and mouse, trackpad and hardware Back work throughout.",
+			"Large system text is a supported layout. Dialog cards cap themselves to the window and scroll long messages, actions stack once the font scale passes 1.5, and labelled controls grow with their text rather than clipping it.",
+		],
+	},
+	{
+		id: "feel",
+		title: "Look and feel",
+		items: [
+			"Restyled throughout — one accent, one separator, one back bar, Apple-Notes style note cards, animated bars, and every dialog moved onto one in-app sheet.",
+			"Dark and light themes follow the system, and the white flash when moving between screens is gone.",
+		],
+	},
+	{
+		id: "reliability",
+		title: "Performance and reliability",
+		items: [
+			"Notes are read in parallel, the database is opened once by the app, and a launch no longer re-decides itself on every navigation.",
+			"Back during an autosave waits for the write. The last keystroke, including a checklist item, is on disk before the screen leaves.",
+			"A retried first save reuses its folder, so a failed attempt no longer leaves \"Name (1)\" and \"Name (2)\" folders beside the note.",
+			"The embedder's vector store persists, and image search embeds the picture rather than the path to it.",
+			"Fixed the \"couldn't save\" popup loop, the update-depth crash from streamed AI tokens, and the Android SQLite handle poisoning that could brick the AI screen.",
+			"ExecuTorch 16 KB page-size support, `file://` stripped from model paths, SecureStore keys sanitised, and racing folder creations deduplicated.",
+		],
+	},
+];
+
+const limits = [
+	"Android is the supported platform. iOS is not a target.",
+	"There is no cloud sync. The vault is a folder, and moving it between devices is something you do, not something the app does for you.",
+	"Image generation is slow. The four-step exports take well over a minute a picture on a phone, and only one runs at a time.",
+	"The largest model is 3.8 GB. Downloading one is an explicit choice the app makes you confirm.",
+	"Math, Mermaid diagrams, block references and drag-to-reorder blocks are still on the list for later.",
+];
+---
+
+<Layout
+	title={`NoteGuard ${site.version} — release notes`}
+	description={`The full feature list for NoteGuard ${site.version}: notes as Markdown files, PIN-encrypted locking, a rebuilt editor, semantic and image search, tasks and reminders, version history, and on-device AI.`}
+	ogImageAlt={`NoteGuard ${site.version} release notes`}
+>
+	<main>
+		<PageHeader
+			eyebrow={`Release notes · ${site.version}`}
+			title="Everything NoteGuard does."
+			lede="The full feature list for the current release, written out in detail. If a sentence here is not something the app does, it does not belong here."
+			meta="Android is the supported platform. These notes cover the whole app."
+		/>
+
+		<div class="container mx-auto px-6 max-w-3xl pb-24">
+			{
+				sections.map((section, index) => (
+					<section
+						id={section.id}
+						class="mb-16 scroll-mt-24 border-t border-white/8 pt-12"
+					>
+						<div class="flex items-baseline gap-4">
+							<span class="text-sm font-bold tabular-nums text-[#8E8E93]">
+								{String(index + 1).padStart(2, "0")}
+							</span>
+							<h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+								{section.title}
+							</h2>
+						</div>
+
+						{section.lede && (
+							<p class="mt-4 text-[17px] text-zinc-300 leading-relaxed">
+								{section.lede}
+							</p>
+						)}
+
+						<ul class="mt-6 space-y-4">
+							{section.items.map((item) => (
+								<li class="flex gap-3.5 text-[16px] text-zinc-400 leading-relaxed">
+									<span class="mt-2.5 h-1 w-1 rounded-full bg-purple-400/80 shrink-0" />
+									<span>{item}</span>
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+
+			<!-- Known limits -->
+			<section
+				id="limits"
+				class="mb-16 scroll-mt-24 border-t border-white/8 pt-12"
+			>
+				<h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+					Where the edges are
+				</h2>
+				<ul class="mt-6 space-y-4">
+					{
+						limits.map((item) => (
+							<li class="flex gap-3.5 text-[16px] text-zinc-400 leading-relaxed">
+								<span class="mt-2.5 h-1 w-1 rounded-full bg-amber-400/80 shrink-0" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<a
+				href={url("/")}
+				class="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors"
+			>
+				← Back to NoteGuard
+			</a>
+		</div>
+
+		<DownloadCta />
+	</main>
+	<Footer />
+</Layout>

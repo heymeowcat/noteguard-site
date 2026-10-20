@@ -1,0 +1,181 @@
+---
+const extras = [
+	{
+		title: "Home-screen widget",
+		body: "Pinned and recent notes on your home screen, each tap opening the note, plus a New note shortcut. Locked and deleted notes are never mirrored to it.",
+	},
+	{
+		title: "Share-sheet capture",
+		body: "Send text, links or images from any other app. NoteGuard opens Quick Add with the content prefilled, and saving embeds the images in the note.",
+	},
+	{
+		title: "A note in the notification shade",
+		body: "Stick a note to the shade with a preview written for it, and the preview keeps up as you edit the note underneath.",
+	},
+	{
+		title: "Resume where you left off",
+		body: "The app reopens the note you were in, at the place you stopped reading. On by default, switchable in Settings.",
+	},
+	{
+		title: "Layout that follows the window",
+		body: "Material 3 size classes drive the layout, and it re-flows live. Drag a ChromeOS window across a breakpoint and the panes change without a relaunch or a lost note.",
+	},
+	{
+		title: "Large system text",
+		body: "Dialogs cap themselves to the window and scroll, actions stack past a 1.5× font scale, and labelled controls grow with their text instead of clipping it.",
+	},
+];
+---
+
+<section id="android" class="relative py-24 md:py-32">
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(96,165,250,0.12),_transparent_60%)] pointer-events-none"
+	>
+	</div>
+
+	<div class="container mx-auto px-6 relative">
+		<div class="grid lg:grid-cols-[1fr_1.05fr] gap-14 items-center">
+			<div>
+				<span class="eyebrow">Android</span>
+				<h2
+					class="mt-4 text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight"
+				>
+					Built for the phone you actually have.
+				</h2>
+				<p class="mt-5 text-lg text-zinc-400 leading-relaxed">
+					NoteGuard is an Android app first. It talks to the share
+					sheet, the notification shade and the home screen the way an
+					Android app should, and it grows into tablets, foldables and
+					ChromeOS instead of pretending they are phones.
+				</p>
+
+				<div class="mt-10 grid sm:grid-cols-2 gap-x-8 gap-y-7">
+					{
+						extras.map((item) => (
+							<div>
+								<h3 class="text-[15px] font-semibold text-white">
+									{item.title}
+								</h3>
+								<p class="mt-1.5 text-[14px] text-zinc-400 leading-relaxed">
+									{item.body}
+								</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+
+			<!-- The wide layout, drawn the way the app draws it -->
+			<div class="relative">
+				<div
+					class="absolute -inset-8 bg-blue-600/15 blur-[80px] rounded-full pointer-events-none"
+				>
+				</div>
+				<div
+					aria-hidden="true"
+					class="relative rounded-2xl border border-white/10 bg-[#0d0d0f] p-2 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]"
+				>
+					<div
+						class="rounded-xl bg-black overflow-hidden grid grid-cols-[130px_190px_1fr] h-[330px] text-left"
+					>
+						<!-- Folders rail -->
+						<div class="bg-[#101012] border-r border-white/5 p-3">
+							<div class="text-[11px] font-bold text-white mb-3">
+								Folders
+							</div>
+							<div class="space-y-1.5">
+								{
+									["Notes  12", "Work  8", "Journal  3", "Recipes  6"].map(
+										(name, i) => (
+											<div
+												class={
+													"px-2 py-1.5 rounded-md text-[10.5px] " +
+													(i === 0
+														? "bg-accent/20 text-purple-300"
+														: "text-[#9E9EA4]")
+												}
+											>
+												{name}
+											</div>
+										),
+									)
+								}
+							</div>
+							<div class="mt-4 text-[10px] text-[#8E8E93] px-2">
+								Tasks
+								<br />
+								Recently Deleted
+							</div>
+						</div>
+
+						<!-- Note list -->
+						<div class="bg-[#0a0a0b] border-r border-white/5">
+							<div class="px-3 py-2.5 border-b border-white/5">
+								<div class="text-[11px] font-bold text-white">
+									Notes
+								</div>
+							</div>
+							<div>
+								{
+									[
+										["Kyoto trip plan", "10:42 AM"],
+										["Reading list", "Yesterday"],
+										["Roof repair quote", "Tuesday"],
+										["Standup notes", "Monday"],
+									].map(([title, date], i) => (
+										<div
+											class={
+												"px-3 py-2 border-b border-white/5 " +
+												(i === 0 ? "bg-accent/10" : "")
+											}
+										>
+											<div
+												class={
+													"text-[11px] font-semibold " +
+													(i === 0 ? "text-purple-300" : "text-zinc-200")
+												}
+											>
+												{title}
+											</div>
+											<div class="text-[9.5px] text-[#8E8E93]">
+												{date}
+											</div>
+										</div>
+									))
+								}
+							</div>
+						</div>
+
+						<!-- Editor -->
+						<div class="p-4 overflow-hidden">
+							<div class="text-[13px] font-bold text-white mb-1">
+								Kyoto trip plan
+							</div>
+							<div class="text-[9.5px] text-[#8E8E93] mb-3">
+								Saved
+							</div>
+							<div class="space-y-1.5">
+								<div class="h-1.5 w-[85%] rounded-full bg-white/12"></div>
+								<div class="h-1.5 w-[70%] rounded-full bg-white/8"></div>
+								<div class="h-1.5 w-[92%] rounded-full bg-white/12"></div>
+								<div class="h-1.5 w-[45%] rounded-full bg-white/8"></div>
+							</div>
+							<div class="mt-4 rounded-md border-l-2 border-accent bg-accent/10 px-2 py-1.5">
+								<div class="text-[9px] font-bold text-purple-300">Note</div>
+								<div class="mt-1 h-1.5 w-[75%] rounded-full bg-white/10"></div>
+							</div>
+							<div class="mt-4 space-y-1.5">
+								<div class="h-1.5 w-[88%] rounded-full bg-white/12"></div>
+								<div class="h-1.5 w-[60%] rounded-full bg-white/8"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="mt-4 text-center text-[13px] text-[#8E8E93]">
+					On a tablet, foldable or a large ChromeOS window, the folders
+					rail, the note list and the editor sit side by side.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
