@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "./screens";
 import {
 	ScreenFolders,
-	ScreenNotes,
+	ScreenLock,
 	ScreenEditor,
 	ScreenSearch,
 	ScreenTasks,
@@ -45,7 +45,7 @@ const features = [
 		],
 		color: "#34d399",
 		align: "right" as const,
-		screen: <ScreenNotes />,
+		screen: <ScreenLock />,
 	},
 	{
 		id: "editor",
