@@ -10,39 +10,44 @@ import {
 	FolderPlus,
 	Trash2,
 	ListTodo,
+	FileText,
 	ChevronRight,
 	ChevronLeft,
 	SlidersHorizontal,
 	CheckCircle2,
+	CircleCheck,
 	Circle,
+	SquareCheck,
 	Pin,
 	Bell,
-	CalendarDays,
+	Calendar,
 	Undo2,
 	Redo2,
 	Paperclip,
+	PencilLine,
 	Brush,
 	Bold,
 	Italic,
 	Underline,
 	Strikethrough,
 	Heading1,
+	Heading2,
+	Heading3,
 	List,
-	ListOrdered,
-	Quote,
 	Code,
-	Link2,
-	Minus,
 	Sparkles,
 	Brain,
 	Images,
-	EllipsisVertical,
+	Image as ImageIcon,
+	Ellipsis,
 	SquarePen,
 	Download,
-	Check,
-	Hash,
-	Shield,
-	KeyRound,
+	AlertCircle,
+	Table,
+	Mic,
+	Cpu,
+	Plus,
+	MessageSquare,
 } from "lucide-react";
 
 export function cn(...inputs: (string | undefined | null | false)[]) {
@@ -51,160 +56,249 @@ export function cn(...inputs: (string | undefined | null | false)[]) {
 
 /*
  * The palette below is the app's own dark theme, read from `themes/theme.ts`
- * in the NoteGuard repository: a black screen, #1C1C1E cards, #2C2C2E grouped
- * fields and the #BB86FC accent. The mockups are meant to be recognisable as
- * the real app, not a mood board.
+ * and the screen palette in `getScreenPalette()`.
+ *
+ * Two muted greys exist in the app and they are not interchangeable: the
+ * iOS-style screens (folders, note list, search, AI models) use #8E8E93,
+ * while the React-Native-Paper screens (editor, toolbar, tasks) use #AAAAAA.
+ * The editor sits on #121212 and the toolbar on #1E1E1E — a different
+ * palette from the black screens, exactly as in the app.
  */
 export const A = {
 	accent: "#BB86FC",
+	accentWash: "rgba(187,134,252,0.12)",
+	accentEdge: "rgba(187,134,252,0.50)",
 	screen: "#000000",
 	card: "#1C1C1E",
 	field: "#2C2C2E",
+	editorBg: "#121212",
+	surface: "#1E1E1E",
 	text: "#FFFFFF",
 	muted: "#8E8E93",
+	paper: "#AAAAAA",
 	separator: "#38383A",
+	divider: "#2C2C2C",
 	chevron: "#636366",
 	danger: "#FF3B30",
 	success: "#34C759",
+	warning: "#FF9500",
+	glass: "rgba(28,28,30,0.72)",
 };
 
 /* ──────────────────────────  Shared pieces  ────────────────────────── */
 
-export const NavBar = ({
+const Screen = ({
+	children,
+	bg = A.screen,
+}: {
+	children: React.ReactNode;
+	bg?: string;
+}) => (
+	<div
+		className="h-full w-full flex flex-col overflow-hidden font-sans"
+		style={{ backgroundColor: bg }}
+	>
+		{children}
+	</div>
+);
+
+const NavHeader = ({
+	left,
 	title,
-	back,
 	right,
 }: {
+	left?: React.ReactNode;
 	title?: string;
-	back?: string;
 	right?: React.ReactNode;
 }) => (
-	<div className="flex items-center gap-2 px-4 pt-3 pb-2 shrink-0">
-		{back && (
-			<div className="flex items-center gap-0.5 text-[13px] text-accent">
-				<ChevronLeft className="w-5 h-5" />
-				<span>{back}</span>
-			</div>
-		)}
+	<div className="flex items-center gap-1.5 px-2 pt-2.5 pb-1.5 shrink-0">
+		<div className="flex items-center gap-0.5 min-w-0">{left}</div>
 		{title && (
-			<div className="text-[15px] font-semibold text-white truncate">
+			<div className="flex-1 text-center text-[14px] font-semibold text-white tracking-tight truncate">
 				{title}
 			</div>
 		)}
-		<div className="ml-auto flex items-center gap-3 text-zinc-400">{right}</div>
+		{!title && <div className="flex-1" />}
+		<div className="flex items-center gap-2.5 text-accent">{right}</div>
 	</div>
 );
 
-export const LargeTitle = ({ children }: { children: React.ReactNode }) => (
-	<div className="px-4 pt-1 pb-3 text-[26px] font-bold text-white tracking-tight">
+/** The back chevron plus its label, as the app draws it. */
+const Back = ({ label }: { label?: string }) => (
+	<div className="flex items-center gap-0.5 text-accent">
+		<ChevronLeft className="w-[22px] h-[22px]" strokeWidth={2.2} />
+		{label && <span className="text-[14px] -ml-1">{label}</span>}
+	</div>
+);
+
+const LargeTitle = ({ children }: { children: React.ReactNode }) => (
+	<div className="px-5 pt-1 pb-2 text-[27px] font-bold text-white tracking-tight">
 		{children}
 	</div>
 );
 
-export const SearchField = ({
+/** The folders screen has its own search field, not the Search screen's box. */
+const FieldSearch = ({ placeholder }: { placeholder: string }) => (
+	<div className="mx-4 flex items-center gap-1.5 rounded-xl bg-[#1C1C1E] px-2.5 h-[34px]">
+		<Search className="w-[15px] h-[15px] text-[#8E8E93] shrink-0" />
+		<span className="text-[13px] text-[#8E8E93] truncate">{placeholder}</span>
+	</div>
+);
+
+/** The Search screen's box: a bordered field that turns accent when focused. */
+const BoxSearch = ({
 	placeholder,
-	active,
+	focused,
 }: {
 	placeholder: string;
-	active?: boolean;
+	focused?: boolean;
 }) => (
 	<div
-		className={cn(
-			"mx-4 flex items-center gap-2 rounded-xl px-3 h-9 text-[13px] bg-[#2C2C2E]",
-			active && "ring-1 ring-accent/60",
-		)}
+		className="mx-4 flex items-center gap-2 rounded-[10px] border bg-[#1C1C1E] px-2.5 h-[38px]"
+		style={{ borderColor: focused ? A.accent : A.separator }}
 	>
-		<Search className="w-4 h-4 text-[#9E9EA4] shrink-0" />
-		<span className="text-[#9E9EA4] truncate">{placeholder}</span>
+		<Search className="w-[15px] h-[15px] text-[#8E8E93] shrink-0" />
+		<span className="text-[12.5px] text-[#8E8E93] truncate">{placeholder}</span>
 	</div>
 );
 
-export const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-	<div className="px-4 pt-4 pb-1.5 text-[10px] font-semibold tracking-[0.08em] uppercase text-[#9E9EA4]">
+/** The iOS-style section label: 13 / 600 / letterSpacing 0.5, already uppercase. */
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+	<div className="px-5 pt-4 pb-1.5 text-[10px] font-semibold tracking-[0.6px] text-[#8E8E93]">
 		{children}
 	</div>
 );
 
-export const GroupCard = ({ children }: { children: React.ReactNode }) => (
-	<div className="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">{children}</div>
-);
-
-export const GroupRow = ({
-	icon,
-	label,
-	value,
-	danger,
+const GroupCard = ({
+	children,
+	className,
 }: {
-	icon?: React.ReactNode;
-	label: string;
-	value?: string;
-	danger?: boolean;
+	children: React.ReactNode;
+	className?: string;
 }) => (
-	<div className="flex items-center gap-3 px-3 h-11 border-b border-[#38383A] last:border-0">
-		{icon && <span className="shrink-0 w-5 flex justify-center">{icon}</span>}
-		<span
-			className={cn(
-				"text-[14px] flex-1 truncate",
-				danger ? "text-[#FF3B30]" : "text-white",
-			)}
-		>
-			{label}
-		</span>
-		{value && <span className="text-[14px] text-[#9E9EA4]">{value}</span>}
-		<ChevronRight className="w-4 h-4 text-[#636366] shrink-0" />
+	<div
+		className={cn("mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]", className)}
+	>
+		{children}
 	</div>
 );
 
-export const NoteRow = ({
+const Hairline = ({ inset = 0 }: { inset?: number }) => (
+	<div
+		className="h-px bg-[#38383A]"
+		style={{ marginLeft: inset }}
+	></div>
+);
+
+/** A row inside a grouped card: icon, name, count, chevron. */
+const ListRow = ({
+	icon,
+	name,
+	count,
+	separatorInset = 0,
+}: {
+	icon: React.ReactNode;
+	name: string;
+	count?: string;
+	separatorInset?: number;
+}) => (
+	<>
+		<div className="flex items-center gap-3 pl-4 pr-3.5 min-h-[46px]">
+			<span className="w-5 shrink-0 text-accent flex justify-center">{icon}</span>
+			<span className="text-[14.5px] text-white tracking-[-0.15px] flex-1 truncate">
+				{name}
+			</span>
+			{count && (
+				<span className="text-[13.5px] text-[#8E8E93] mr-1 tabular-nums">
+					{count}
+				</span>
+			)}
+			<ChevronRight className="w-[16px] h-[16px] text-[#636366] shrink-0" />
+		</div>
+		{separatorInset > 0 && <Hairline inset={separatorInset} />}
+	</>
+);
+
+/**
+ * A note card in a list: a 16.5/600 title, then a 14pt meta line holding the
+ * date and the snippet. The rows sit straight on the screen with a hairline
+ * between them, the way the app draws them — there is no card behind them.
+ * A locked note shows a lock, the words "Locked Note" and a date followed by
+ * an em dash, never any of its text.
+ */
+const NoteRow = ({
 	title,
-	preview,
 	date,
+	snippet,
 	locked,
 	pinned,
-	task,
 	badge,
+	image,
 }: {
 	title: string;
-	preview?: string;
 	date?: string;
+	snippet?: string;
 	locked?: boolean;
 	pinned?: boolean;
-	task?: boolean;
 	badge?: string;
+	image?: boolean;
 }) => (
-	<div className="px-4 py-2.5 border-b border-[#38383A] last:border-0">
+	<div className="px-5 pr-4 py-2.5">
 		<div className="flex items-center gap-1.5">
-			{pinned && <Pin className="w-3 h-3 text-[#9E9EA4] shrink-0" />}
-			{locked && <Lock className="w-3.5 h-3.5 text-[#BB86FC] shrink-0" />}
-			{task && <CheckCircle2 className="w-3.5 h-3.5 text-[#9E9EA4] shrink-0" />}
-			<span
-				className={cn(
-					"text-[15px] font-semibold tracking-tight truncate",
-					locked ? "text-[#BB86FC]" : "text-white",
-				)}
-			>
+			{locked && (
+				<Lock className="w-[13px] h-[13px] text-[#8E8E93] shrink-0" />
+			)}
+			{pinned && <Pin className="w-[12px] h-[12px] text-[#8E8E93] shrink-0" />}
+			<span className="text-[14px] font-semibold tracking-[-0.25px] text-white truncate">
 				{title}
 			</span>
 			{badge && (
-				<span className="ml-auto shrink-0 text-[10px] font-semibold text-purple-300 bg-accent/15 rounded-full px-1.5 py-0.5">
+				<span className="ml-auto shrink-0 text-[9.5px] font-medium text-accent">
 					{badge}
 				</span>
 			)}
 		</div>
-		{preview && (
-			<p className="mt-0.5 text-[12.5px] text-zinc-400 truncate">{preview}</p>
-		)}
-		{date && <p className="mt-0.5 text-[11px] text-[#8E8E93]">{date}</p>}
+		<div className="flex items-center gap-1.5 mt-0.5">
+			{date && (
+				<span className="text-[11.5px] text-[#8E8E93] shrink-0 whitespace-nowrap">
+					{date}
+				</span>
+			)}
+			{snippet && (
+				<span className="text-[11.5px] text-[#8E8E93] truncate">{snippet}</span>
+			)}
+			{image && (
+				<span className="ml-auto h-[30px] w-[30px] rounded-lg bg-[#3a3a3c] shrink-0"></span>
+			)}
+		</div>
 	</div>
 );
 
-export const GlassBar = ({ children }: { children: React.ReactNode }) => (
-	<div className="mt-auto flex items-center justify-between px-5 py-3 bg-white/[0.07] backdrop-blur-md border-t border-white/10 text-zinc-200">
-		{children}
+/** The glass bar the app puts at the bottom of its list screens. */
+const GlassBar = ({
+	left,
+	centre,
+	right,
+}: {
+	left?: React.ReactNode;
+	centre?: string;
+	right?: React.ReactNode;
+}) => (
+	<div
+		className="mt-auto flex items-center justify-between px-5 py-2.5"
+		style={{
+			backgroundColor: A.glass,
+			borderTopWidth: 1,
+			borderTopColor: "rgba(255,255,255,0.18)",
+		}}
+	>
+		<span className="w-6 text-accent">{left}</span>
+		<span className="flex-1 text-center text-[11.5px] text-[#8E8E93]">{centre}</span>
+		<span className="w-6 text-accent flex justify-end">{right}</span>
 	</div>
 );
 
-export const ModeChip = ({
+const Pill = ({
 	label,
 	active,
 	icon: Icon,
@@ -215,465 +309,589 @@ export const ModeChip = ({
 }) => (
 	<div
 		className={cn(
-			"flex items-center gap-1.5 rounded-full px-3 h-7 text-[12px] font-semibold whitespace-nowrap",
-			active ? "bg-accent text-[#1a1030]" : "bg-[#2C2C2E] text-zinc-400",
+			"flex items-center gap-1 rounded-full px-2.5 h-[26px] text-[11.5px] font-semibold whitespace-nowrap",
+			active ? "bg-accent text-white" : "bg-[#2C2C2E] text-white",
 		)}
 	>
-		{Icon && <Icon className="w-3.5 h-3.5" />}
+		{Icon && <Icon className="w-3 h-3" />}
 		{label}
 	</div>
 );
 
-export const TagChip = ({ label }: { label: string }) => (
-	<span className="text-[9.5px] font-bold uppercase tracking-wide text-[#BB86FC] bg-accent/15 rounded-md px-1.5 py-0.5">
+/** The outlined chip row the AI Models screen uses. */
+const OutlineChip = ({
+	label,
+	active,
+	icon: Icon,
+}: {
+	label: string;
+	active?: boolean;
+	icon?: any;
+}) => (
+	<div
+		className={cn(
+			"flex items-center gap-1 rounded-full px-2.5 h-[26px] text-[11.5px] font-semibold whitespace-nowrap border",
+			active
+				? "border-accent bg-accent/10 text-accent"
+				: "border-[#38383A] text-[#8E8E93]",
+		)}
+	>
+		{Icon && <Icon className="w-3 h-3" />}
 		{label}
-	</span>
+	</div>
 );
 
-export const SizeChip = ({ label }: { label: string }) => (
-	<span className="text-[9.5px] font-semibold text-zinc-400 bg-[#2C2C2E] rounded-md px-1.5 py-0.5">
-		{label}
-	</span>
+/** A segmented control: Downloaded / Available, By date / By note. */
+const Segmented = ({
+	options,
+	active,
+	dark,
+}: {
+	options: string[];
+	active?: number;
+	dark?: boolean;
+}) => (
+	<div
+		className="mx-4 flex gap-0.5 rounded-[9px] p-0.5"
+		style={{ backgroundColor: dark ? A.card : A.field }}
+	>
+		{options.map((option, i) => (
+			<div
+				key={option}
+				className={cn(
+					"flex-1 text-center text-[11.5px] font-semibold rounded-[7px] py-[5px] px-2 whitespace-nowrap",
+					i === (active ?? 0) ? "text-white" : "text-[#8E8E93]",
+				)}
+				style={{
+					backgroundColor:
+						i === (active ?? 0) ? (dark ? "#48484A" : A.card) : "transparent",
+				}}
+			>
+				{option}
+			</div>
+		))}
+	</div>
+);
+
+/** A catalog row in the AI Models screen. */
+const ModelRow = ({
+	name,
+	tag,
+	tagIcon: TagIcon,
+	steps,
+	size,
+	right,
+}: {
+	name: string;
+	tag?: string;
+	tagIcon?: any;
+	steps?: string;
+	size?: string;
+	right?: React.ReactNode;
+}) => (
+	<div className="flex items-center gap-3 px-4 py-3">
+		<div className="flex-1 min-w-0">
+			<div className="text-[14px] tracking-[-0.2px] text-white truncate">{name}</div>
+			<div className="flex items-center gap-2 mt-1.5 flex-wrap">
+				{tag && (
+					<span className="flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-[9.5px] font-medium text-accent">
+						{TagIcon && <TagIcon className="w-[9px] h-[9px]" />}
+						{tag}
+					</span>
+				)}
+				{steps && (
+					<span className="rounded-md bg-accent/10 px-1.5 py-0.5 text-[9.5px] font-medium text-accent">
+						{steps}
+					</span>
+				)}
+				{size && (
+					<span className="text-[9.5px] font-medium text-[#8E8E93]">{size}</span>
+				)}
+			</div>
+		</div>
+		<div className="shrink-0 flex items-center gap-2">{right}</div>
+	</div>
 );
 
 /* ──────────────────────────  The screens  ────────────────────────── */
 
 /** The Folders screen — the app's first screen. */
 export const ScreenFolders = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar right={<Cog className="w-5 h-5" style={{ color: A.accent }} />} />
+	<Screen>
+		<NavHeader right={<Cog className="w-[19px] h-[19px]" />} />
 		<LargeTitle>Folders</LargeTitle>
-		<SearchField placeholder="Search" />
 
-		<SectionLabel>On my device</SectionLabel>
+		<FieldSearch placeholder="Search" />
+
+		<SectionLabel>ON MY DEVICE</SectionLabel>
 		<GroupCard>
-			<GroupRow
-				icon={<Folder className="w-5 h-5" style={{ color: A.accent }} />}
-				label="Notes"
-				value="12"
+			<ListRow
+				icon={<FileText className="w-[19px] h-[19px]" />}
+				name="Notes"
+				count="12"
+				separatorInset={14}
 			/>
-			<GroupRow
-				icon={<FolderOpen className="w-5 h-5" style={{ color: A.accent }} />}
-				label="Work"
-				value="8"
+			<ListRow
+				icon={<FolderOpen className="w-[19px] h-[19px]" />}
+				name="Work"
+				count="8"
+				separatorInset={14}
 			/>
-			<GroupRow
-				icon={<Folder className="w-5 h-5" style={{ color: A.accent }} />}
-				label="Journal"
-				value="3"
+			<ListRow
+				icon={<Folder className="w-[19px] h-[19px]" />}
+				name="Journal"
+				count="3"
 			/>
 		</GroupCard>
 
-		<div className="mt-2">
-			<GroupRow
-				icon={<ListTodo className="w-5 h-5" style={{ color: A.accent }} />}
-				label="Tasks"
-				value="4 open"
+		<GroupCard className="mt-4">
+			<ListRow
+				icon={<ListTodo className="w-[19px] h-[19px]" />}
+				name="Tasks"
+				count="4 open"
 			/>
-			<GroupRow
-				icon={<Trash2 className="w-5 h-5" style={{ color: A.accent }} />}
-				label="Recently Deleted"
-				value="2"
-			/>
-		</div>
+		</GroupCard>
 
-		<GlassBar>
-			<FolderPlus className="w-6 h-6" />
-			<span className="text-[13px] font-medium">3 Folders</span>
-			<SquarePen className="w-6 h-6" />
-		</GlassBar>
-	</div>
+		<GroupCard className="mt-4">
+			<ListRow
+				icon={<Trash2 className="w-[19px] h-[19px]" />}
+				name="Recently Deleted"
+				count="2"
+			/>
+		</GroupCard>
+
+		<GlassBar
+			left={<FolderPlus className="w-[20px] h-[20px]" />}
+			centre="3 Folders"
+			right={<SquarePen className="w-[20px] h-[20px]" />}
+		/>
+	</Screen>
+);
+
+/**
+ * The note list, with a locked note in it. A locked note shows a lock, the
+ * words "Locked Note" and a date followed by an em dash — nothing of what
+ * it says.
+ */
+export const ScreenNotes = () => (
+	<Screen>
+		<NavHeader
+			left={<Back label="Folders" />}
+			right={<Ellipsis className="w-[20px] h-[20px]" />}
+		/>
+		<LargeTitle>Notes</LargeTitle>
+
+		<BoxSearch placeholder="Search" />
+
+		<div className="px-5 pt-2 pb-1 flex items-center gap-1.5">
+			<Pin
+				className="w-[12px] h-[12px] text-accent -rotate-[25deg]"
+				strokeWidth={2.2}
+			/>
+			<span className="text-[14px] font-bold text-white">Pinned</span>
+		</div>
+		<NoteRow title="Locked Note" date="Yesterday" snippet="  —" locked />
+		<Hairline inset={20} />
+
+		<div className="px-5 pt-4 pb-1 text-[14px] font-bold text-white">Today</div>
+		<NoteRow
+			title="Kyoto trip plan"
+			date="10:42 AM"
+			snippet="Fushimi Inari before the crowds, then the bamboo grove."
+		/>
+		<Hairline inset={20} />
+		<NoteRow
+			title="Roof repair quote"
+			date="9:15 AM"
+			snippet="He can do it Thursday morning, cash or transfer."
+		/>
+		<Hairline inset={20} />
+
+		<div className="px-5 pt-4 pb-1 text-[14px] font-bold text-white">Yesterday</div>
+		<NoteRow
+			title="Reading list"
+			date="Yesterday"
+			snippet="Six books for the winter, and the order to read them in."
+			image
+		/>
+		<Hairline inset={20} />
+
+		<GlassBar
+			left={<MessageSquare className="w-[20px] h-[20px]" />}
+			centre="12 notes"
+			right={<SquarePen className="w-[20px] h-[20px]" />}
+		/>
+	</Screen>
 );
 
 /** The editor, with the slash command menu open. */
 export const ScreenEditor = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar
-			back="Notes"
+	<Screen bg={A.editorBg}>
+		<NavHeader
+			left={<Back label="Notes" />}
 			right={
 				<>
-					<CheckCircle2 className="w-4 h-4 text-[#9E9EA4]" />
-					<span className="text-[12px] text-[#9E9EA4]">1/3</span>
-					<EllipsisVertical className="w-5 h-5" />
+					<SquareCheck className="w-[12px] h-[12px] text-[#AAAAAA]" />
+					<span className="text-[11px] text-[#AAAAAA]">1/3</span>
+					<Ellipsis className="w-[19px] h-[19px]" />
 				</>
 			}
 		/>
 
-		<div className="px-4 pt-1 flex-1 overflow-hidden">
-			<h1 className="text-[22px] font-bold text-white tracking-tight">
+		<div className="px-5 pt-2 flex-1 overflow-hidden">
+			<h1 className="text-[24px] font-bold text-white tracking-tight">
 				Kyoto trip plan
 			</h1>
-			<div className="mt-3 space-y-1.5">
-				<p className="text-[13px] text-zinc-300 leading-relaxed">
-					Fushimi Inari early, before the crowds.
-				</p>
-				<p className="text-[13px] text-zinc-400 leading-relaxed">
-					Arashiyama bamboo grove after lunch.
-				</p>
-				<div className="rounded-lg border-l-2 border-accent bg-accent/10 px-2.5 py-1.5">
-					<p className="text-[12px] text-purple-300 font-semibold">Note</p>
-					<p className="text-[12px] text-zinc-300">
-						Matcha stand closes at 5pm.
-					</p>
-				</div>
-				<p className="text-[13px] text-[#9E9EA4] leading-relaxed">
-					<span className="text-sky-300">📅 2026-04-12</span>{" "}
-					<span className="text-zinc-400">⏰ 09:00</span>
-				</p>
-			</div>
-		</div>
-
-		{/* Slash command menu */}
-		<div className="mx-2 mb-1 rounded-xl bg-[#1C1C1E] border border-white/10 overflow-hidden">
-			<div className="grid grid-cols-2 gap-x-1 p-1.5">
-				{[
-					{ label: "Heading 1", icon: Heading1 },
-					{ label: "Bulleted list", icon: List },
-					{ label: "Checklist", icon: CheckCircle2 },
-					{ label: "Callout", icon: Sparkles },
-					{ label: "Table", icon: ListOrdered },
-					{ label: "Code block", icon: Code },
-				].map((item) => (
-					<div
-						key={item.label}
-						className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11.5px] text-zinc-300"
-					>
-						<item.icon className="w-3.5 h-3.5 text-[#9E9EA4]" />
-						{item.label}
+			<div className="mt-3 space-y-1.5 text-[13px] leading-[1.45]">
+				<p className="text-white">Fushimi Inari early, before the crowds.</p>
+				<p className="text-white">Arashiyama bamboo grove after lunch.</p>
+				{/* A callout: the type's own accent, a 3px edge and a 10% tint. */}
+				<div
+					className="rounded-md border-l-[3px] pl-2.5 pr-2.5 py-2 my-1"
+					style={{
+						borderLeftColor: "#4C8DFF",
+						backgroundColor: "rgba(76,141,255,0.10)",
+					}}
+				>
+					<div className="flex items-center gap-1.5 mb-1">
+						<PencilLine className="w-[11px] h-[11px] text-[#4C8DFF]" />
+						<p className="text-[10.5px] font-bold tracking-[0.3px] text-[#4C8DFF]">
+							Note
+						</p>
 					</div>
-				))}
-			</div>
-		</div>
-
-		{/* Formatting toolbar */}
-		<div className="flex items-center gap-1 px-2 py-2 bg-[#1C1C1E] border-t border-white/10 overflow-hidden">
-			<Undo2 className="w-4 h-4 text-[#8E8E93] shrink-0" />
-			<Redo2 className="w-4 h-4 text-[#8E8E93] shrink-0" />
-			<span className="w-px h-5 bg-white/10 mx-0.5 shrink-0" />
-			<Sparkles className="w-4 h-4 text-accent shrink-0" />
-			<span className="w-px h-5 bg-white/10 mx-0.5 shrink-0" />
-			<Paperclip className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Brush className="w-4 h-4 text-zinc-400 shrink-0" />
-			<span className="w-px h-5 bg-white/10 mx-0.5 shrink-0" />
-			<Bold className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Italic className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Underline className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Strikethrough className="w-4 h-4 text-zinc-400 shrink-0" />
-			<span className="w-px h-5 bg-white/10 mx-0.5 shrink-0" />
-			<Hash className="w-4 h-4 text-zinc-400 shrink-0" />
-			<List className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Quote className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Code className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Link2 className="w-4 h-4 text-zinc-400 shrink-0" />
-			<Minus className="w-4 h-4 text-zinc-400 shrink-0" />
-		</div>
-	</div>
-);
-
-/** A locked note, with the PIN sheet asking for the key. */
-export const ScreenLock = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar back="Notes" right={<EllipsisVertical className="w-5 h-5" />} />
-
-		<div className="px-4 pt-1 flex-1 overflow-hidden">
-			<GroupCard>
-				<NoteRow title="Locked Note" date="Yesterday" locked />
-				<NoteRow
-					title="Reading list"
-					preview="Six books for the winter, and the order to read them in."
-					date="Tuesday"
-				/>
-				<NoteRow
-					title="Roof repair quote"
-					preview="Called him back — he can do it Thursday morning."
-					date="10/18/26"
-				/>
-			</GroupCard>
-		</div>
-
-		{/* The sheet */}
-		<div className="px-3 pb-3">
-			<div className="rounded-2xl bg-[#1C1C1E] border border-white/10 p-4">
-				<div className="flex items-center gap-2">
-					<KeyRound className="w-4 h-4 text-accent" />
-					<span className="text-[14px] font-semibold text-white">
-						Lock note
-					</span>
+					<p className="text-[12.5px] text-white">Matcha stand closes at 5pm.</p>
 				</div>
-				<p className="mt-1.5 text-[11.5px] text-zinc-400 leading-relaxed">
-					Your PIN is the key. It is not stored anywhere, so a forgotten
-					PIN means the note cannot be read.
+				<p className="text-white">
+					<span className="text-sky-300">📅 2026-04-12</span>{" "}
+					<span>⏰ 09:00</span>
 				</p>
-
-				<div className="mt-3.5 flex justify-center gap-2.5">
-					{[0, 1, 2, 3, 4, 5].map((i) => (
-						<span
-							key={i}
-							className={cn(
-								"h-3 w-3 rounded-full",
-								i < 4 ? "bg-accent" : "bg-white/15",
-							)}
-						></span>
-					))}
-				</div>
-
-				<div className="mt-4 flex items-center gap-1.5 text-[10.5px] text-[#9E9EA4]">
-					<Shield className="w-3 h-3" />
-					PBKDF2-HMAC-SHA256 · 210,000 rounds
-				</div>
 			</div>
 		</div>
-	</div>
+
+		{/* The slash command menu, in the order the app lists it. */}
+		<div
+			className="mx-2 mb-1 rounded-xl overflow-hidden border-t"
+			style={{ backgroundColor: A.surface, borderColor: A.divider }}
+		>
+			{[
+				{ label: "Heading 1", icon: Heading1 },
+				{ label: "Bulleted list", icon: List },
+				{ label: "Checklist", icon: SquareCheck },
+				{ label: "Callout", icon: AlertCircle },
+				{ label: "Table", icon: Table },
+				{ label: "Code block", icon: Code },
+			].map((item) => (
+				<div
+					key={item.label}
+					className="flex items-center gap-3 px-4 py-[9px]"
+				>
+					<item.icon className="w-[15px] h-[15px] text-accent shrink-0" />
+					<span className="text-[13px] text-white">{item.label}</span>
+				</div>
+			))}
+		</div>
+
+		{/* The formatting toolbar, in the app's order. */}
+		<div
+			className="flex items-center gap-1 px-1.5 py-1.5 relative overflow-hidden"
+			style={{ backgroundColor: A.surface, borderTopWidth: 1, borderTopColor: A.divider }}
+		>
+			<Undo2 className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Redo2 className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<span className="w-px h-[14px] bg-[#2C2C2C] mx-1 shrink-0" />
+			<Sparkles className="w-[17px] h-[17px] text-accent shrink-0" />
+			<Paperclip className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Brush className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<span className="w-px h-[14px] bg-[#2C2C2C] mx-1 shrink-0" />
+			<Bold className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Italic className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Underline className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Strikethrough className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<span className="w-px h-[14px] bg-[#2C2C2C] mx-1 shrink-0" />
+			<Heading1 className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Heading2 className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<Heading3 className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0" />
+			<div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#1E1E1E] to-transparent"></div>
+		</div>
+	</Screen>
 );
 
 /** The Search screen, with the mode chips. */
 export const ScreenSearch = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar
-			back="Folders"
+	<Screen>
+		<NavHeader
+			left={<Back />}
 			title="Search"
 			right={<SlidersHorizontal className="w-[18px] h-[18px]" />}
 		/>
 
-		<div className="px-4 pt-1">
-			<SearchField placeholder="Search by meaning" active />
+		<BoxSearch placeholder="Search by meaning" focused />
+
+		<div className="flex gap-2 px-4 mt-2">
+			<Pill label="Text" />
+			<Pill label="By meaning" active icon={Brain} />
+			<Pill label="In images" icon={Images} />
 		</div>
 
-		<div className="flex gap-1.5 px-4 mt-2.5">
-			<ModeChip label="Text" />
-			<ModeChip label="By meaning" active icon={Brain} />
-			<ModeChip label="In images" icon={Images} />
-		</div>
-
-		<div className="px-4 mt-2.5 flex items-center gap-1.5 text-[10.5px] text-[#9E9EA4]">
+		<div className="flex items-center gap-1.5 px-4 mt-2 text-[10.5px] text-[#8E8E93] overflow-hidden whitespace-nowrap">
+			<CircleCheck className="w-[13px] h-[13px] text-[#34C759] shrink-0" />
 			<span>Search by meaning</span>
-			<span className="text-zinc-700">·</span>
+			<span className="text-[#38383A]">·</span>
 			<span>All-MiniLM-L6-v2</span>
-			<span className="text-zinc-700">·</span>
-			<span className="text-accent">Selected</span>
-			<ChevronRight className="w-3 h-3" />
+			<span className="text-[#38383A]">·</span>
+			<span className="text-[#34C759]">Selected</span>
+			<ChevronRight className="w-[13px] h-[13px] shrink-0" />
 		</div>
 
-		<div className="mt-3 flex-1 overflow-hidden">
-			<GroupCard>
-				<NoteRow
-					title="Notes on the offline-first idea"
-					preview="A local-first tool owns the file, not the account..."
-					date="10:42 AM"
-					badge="92%"
-				/>
-				<NoteRow
-					title="Why I keep a paper notebook"
-					preview="It cannot be synced, which is the point..."
-					date="Yesterday"
-					badge="81%"
-				/>
-				<NoteRow
-					title="Backup strategy"
-					preview="Copy the folder. That is the whole backup."
-					date="Tuesday"
-					badge="74%"
-				/>
-			</GroupCard>
+		<div className="flex-1 overflow-hidden">
+			<div className="px-5 py-2.5">
+				<div className="flex items-center gap-1.5">
+					<span className="text-[14px] font-semibold tracking-[-0.25px] text-white truncate">
+						Notes on the offline-first idea
+					</span>
+					<span className="ml-auto text-[9.5px] font-medium text-accent">
+						92%
+					</span>
+				</div>
+				<div className="text-[11.5px] text-[#8E8E93] mt-0.5 truncate">
+					10:42 AM A local-first tool owns the file, not the account
+				</div>
+			</div>
+			<div className="h-px bg-[#38383A] ml-5" />
+			<div className="px-5 py-2.5">
+				<div className="flex items-center gap-1.5">
+					<span className="text-[14px] font-semibold tracking-[-0.25px] text-white truncate">
+						Why I keep a paper notebook
+					</span>
+					<span className="ml-auto text-[9.5px] font-medium text-accent">
+						81%
+					</span>
+				</div>
+				<div className="text-[11.5px] text-[#8E8E93] mt-0.5 truncate">
+					Yesterday It cannot be synced, which is the point
+				</div>
+			</div>
+			<div className="h-px bg-[#38383A] ml-5" />
+			<div className="px-5 py-2.5">
+				<div className="flex items-center gap-1.5">
+					<span className="text-[14px] font-semibold tracking-[-0.25px] text-white truncate">
+						Backup strategy
+					</span>
+					<span className="ml-auto text-[9.5px] font-medium text-accent">
+						74%
+					</span>
+				</div>
+				<div className="text-[11.5px] text-[#8E8E93] mt-0.5 truncate">
+					Tuesday Copy the folder. That is the whole backup.
+				</div>
+			</div>
 		</div>
-	</div>
+	</Screen>
 );
 
 /** The Tasks screen, grouped by date. */
 export const ScreenTasks = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar
-			back="Folders"
-			title="Tasks"
-			right={<span className="text-[13px] text-accent">Hide done</span>}
+	<Screen>
+		<NavHeader
+			left={<Back label="Folders" />}
+			right={<span className="text-[14px] text-accent">Hide done</span>}
 		/>
+		<LargeTitle>Tasks</LargeTitle>
 
-		<div className="px-4 pt-1 flex items-center gap-2">
-			<span className="text-[12px] text-[#9E9EA4]">4 open · 1 overdue</span>
-			<div className="ml-auto flex rounded-lg overflow-hidden text-[11px] font-semibold">
-				<span className="px-2.5 py-1 bg-accent text-[#1a1030]">By date</span>
-				<span className="px-2.5 py-1 bg-[#2C2C2E] text-zinc-400">By note</span>
-			</div>
+		<div className="px-5 pb-2.5 text-[11.5px] text-[#AAAAAA]">
+			4 open · 1 overdue
 		</div>
 
-		<div className="mt-3 flex-1 overflow-hidden">
-			<div className="flex items-center gap-2 px-4 pb-1.5">
-				<span className="text-[10px] font-bold tracking-[0.08em] uppercase text-[#FF3B30]">
-					Overdue
+		<div className="self-start ml-5">
+			<Segmented options={["By date", "By note"]} active={0} />
+		</div>
+
+		<div className="flex-1 overflow-hidden">
+			<div className="flex items-center gap-1.5 px-5 pt-4 pb-1.5">
+				<span className="text-[10px] font-bold tracking-[0.4px] text-[#FF3B30]">
+					OVERDUE
 				</span>
 				<span className="text-[10px] font-bold text-[#FF3B30]">1</span>
 			</div>
-			<div className="px-4 pb-2 flex items-start gap-2.5">
-				<Circle className="w-[18px] h-[18px] text-[#8E8E93] shrink-0 mt-px" />
-				<div className="flex-1">
-					<p className="text-[13px] text-white leading-snug">
-						Send the deposit receipt
-					</p>
-					<p className="text-[11px] text-[#9E9EA4]">Landlord</p>
+			<div className="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+				<div className="flex items-start gap-2.5 px-4 py-2.5">
+					<Circle className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0 mt-px" />
+					<div className="flex-1 min-w-0">
+						<p className="text-[13.5px] leading-[1.35] text-white">
+							Send the deposit receipt
+						</p>
+						<p className="text-[10.5px] text-[#AAAAAA] mt-0.5">Landlord</p>
+					</div>
+					<span className="text-[11px] text-[#FF3B30] shrink-0 mt-px">
+						Oct 18
+					</span>
 				</div>
-				<span className="text-[11px] text-[#FF3B30] shrink-0">Oct 18</span>
 			</div>
 
-			<div className="flex items-center gap-2 px-4 pt-2 pb-1.5">
-				<span className="text-[10px] font-bold tracking-[0.08em] uppercase text-[#9E9EA4]">
-					Today
+			<div className="flex items-center gap-1.5 px-5 pt-4 pb-1.5">
+				<span className="text-[10px] font-bold tracking-[0.4px] text-[#8E8E93]">
+					TODAY
 				</span>
-				<span className="text-[10px] font-bold text-[#9E9EA4]">2</span>
+				<span className="text-[10px] font-bold text-[#8E8E93]">2</span>
 			</div>
-			<div className="px-4 pb-1.5 flex items-start gap-2.5">
-				<Circle className="w-[18px] h-[18px] text-[#8E8E93] shrink-0 mt-px" />
-				<div className="flex-1">
-					<p className="text-[13px] text-white leading-snug">
-						Renew the passport
-					</p>
-					<p className="text-[11px] text-[#9E9EA4]">Travel admin</p>
+			<div className="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+				<div className="flex items-start gap-2.5 px-4 py-2.5">
+					<Circle className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0 mt-px" />
+					<div className="flex-1 min-w-0">
+						<p className="text-[13.5px] leading-[1.35] text-white">
+							Renew the passport
+						</p>
+						<p className="text-[10.5px] text-[#AAAAAA] mt-0.5">
+							Travel admin
+						</p>
+					</div>
+					<div className="flex items-center gap-1.5 shrink-0 mt-px">
+						<Bell className="w-[11px] h-[11px] text-[#AAAAAA]" />
+						<span className="text-[11px] text-[#AAAAAA]">09:00</span>
+					</div>
 				</div>
-				<div className="flex items-center gap-1 shrink-0">
-					<Bell className="w-3.5 h-3.5 text-[#9E9EA4]" />
-					<span className="text-[11px] text-zinc-400">09:00</span>
+				<Hairline inset={16} />
+				<div className="flex items-start gap-2.5 px-4 py-2.5">
+					<Circle className="w-[17px] h-[17px] text-[#AAAAAA] shrink-0 mt-px" />
+					<div className="flex-1 min-w-0">
+						<p className="text-[13.5px] leading-[1.35] text-white">
+							Book the ryokan
+						</p>
+						<p className="text-[10.5px] text-[#AAAAAA] mt-0.5">
+							Kyoto trip plan
+						</p>
+					</div>
+					<Calendar className="w-[14px] h-[14px] text-[#AAAAAA] shrink-0 mt-px" />
 				</div>
-			</div>
-			<div className="px-4 pb-2 flex items-start gap-2.5">
-				<Circle className="w-[18px] h-[18px] text-[#8E8E93] shrink-0 mt-px" />
-				<div className="flex-1">
-					<p className="text-[13px] text-white leading-snug">
-						Book the ryokan
-					</p>
-					<p className="text-[11px] text-[#9E9EA4]">Kyoto trip plan</p>
-				</div>
-				<CalendarDays className="w-3.5 h-3.5 text-[#9E9EA4] shrink-0" />
 			</div>
 
-			<div className="flex items-center gap-2 px-4 pt-2 pb-1.5">
-				<span className="text-[10px] font-bold tracking-[0.08em] uppercase text-[#9E9EA4]">
-					Next 7 days
+			<div className="flex items-center gap-1.5 px-5 pt-4 pb-1.5">
+				<span className="text-[10px] font-bold tracking-[0.4px] text-[#8E8E93]">
+					NEXT 7 DAYS
 				</span>
-				<span className="text-[10px] font-bold text-[#9E9EA4]">1</span>
+				<span className="text-[10px] font-bold text-[#8E8E93]">1</span>
 			</div>
-			<div className="px-4 flex items-start gap-2.5">
-				<CheckCircle2 className="w-[18px] h-[18px] text-accent shrink-0 mt-px" />
-				<div className="flex-1">
-					<p className="text-[13px] text-[#9E9EA4] leading-snug line-through">
-						Water the plants
-					</p>
-					<p className="text-[11px] text-[#8E8E93]">Home</p>
+			<div className="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+				<div className="flex items-start gap-2.5 px-4 py-2.5">
+					<CheckCircle2 className="w-[17px] h-[17px] text-accent shrink-0 mt-px" />
+					<div className="flex-1 min-w-0">
+						<p className="text-[13.5px] leading-[1.35] text-[#AAAAAA] line-through">
+							Water the plants
+						</p>
+						<p className="text-[10.5px] text-[#666666] mt-0.5">Home</p>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		<GlassBar>
-			<span className="text-[12px] text-[#9E9EA4]">4 tasks</span>
-			<SquarePen className="w-6 h-6" />
-		</GlassBar>
-	</div>
+		<GlassBar
+			centre="4 tasks"
+			right={<SquarePen className="w-[20px] h-[20px]" />}
+		/>
+	</Screen>
 );
 
 /** The AI Models screen, with the real catalog. */
 export const ScreenAI = () => (
-	<div className="h-full w-full bg-black flex flex-col overflow-hidden">
-		<NavBar back="Settings" title="AI Models" />
+	<Screen>
+		<NavHeader left={<Back label="Settings" />} />
+		<LargeTitle>AI Models</LargeTitle>
 
-		<div className="px-4 pt-1 flex rounded-lg overflow-hidden text-[12px] font-semibold">
-			<span className="flex-1 text-center py-1.5 bg-accent text-[#1a1030]">
-				Downloaded
-			</span>
-			<span className="flex-1 text-center py-1.5 bg-[#2C2C2E] text-zinc-400">
-				Available
-			</span>
-		</div>
+		<Segmented options={["Downloaded", "Available"]} active={0} dark />
 
-		<div className="flex gap-1.5 px-4 mt-2.5 overflow-hidden">
-			<ModeChip label="All" active />
-			<ModeChip label="Text" />
-			<ModeChip label="Transcription" />
-			<ModeChip label="Embeddings" />
-			<ModeChip label="Images" />
-		</div>
-
-		<div className="mt-3 flex-1 overflow-hidden">
-			<div className="px-4 pb-1.5 text-[10px] font-bold tracking-[0.08em] uppercase text-[#9E9EA4]">
-				Text models
+		{/* The category chips scroll, exactly as they do in the app. */}
+		<div className="relative mt-3">
+			<div className="flex gap-2 px-4 overflow-hidden">
+				<OutlineChip label="All" active />
+				<OutlineChip label="Text" />
+				<OutlineChip label="Transcription" />
+				<OutlineChip label="Embeddings" />
+				<OutlineChip label="Images" />
 			</div>
+			<div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent"></div>
+		</div>
+
+		<div className="flex-1 overflow-hidden">
+			<SectionLabel>TEXT MODELS</SectionLabel>
 			<GroupCard>
-				<div className="px-3 py-2.5 border-b border-[#38383A]">
-					<div className="flex items-center gap-1.5">
-						<span className="text-[13.5px] font-semibold text-white">
+				<div className="flex items-center gap-3 px-4 py-3">
+					<div className="flex-1 min-w-0">
+						<div className="text-[14px] font-semibold text-white truncate">
 							Gemma 4 E2B
-						</span>
-						<span className="ml-auto text-[9.5px] font-bold uppercase text-[#BB86FC] bg-accent/20 rounded-full px-1.5 py-0.5">
-							Active
-						</span>
+						</div>
+						<div className="flex items-center gap-1.5 mt-1.5">
+							<span className="flex items-center gap-1 rounded-full bg-[#2C2C2E] px-2 py-0.5 text-[9.5px] font-medium text-[#AAAAAA]">
+								<Cpu className="w-[9px] h-[9px]" />
+								2B
+							</span>
+							<span className="rounded-full bg-accent px-2 py-0.5 text-[9.5px] font-semibold text-white">
+								Active
+							</span>
+						</div>
 					</div>
-					<div className="mt-1.5 flex items-center gap-1.5">
-						<SizeChip label="2B" />
-						<span className="text-[10.5px] text-[#8E8E93]">
-							Powers Write and AI Chat
-						</span>
-					</div>
+					<CircleCheck className="w-[19px] h-[19px] text-accent shrink-0" />
 				</div>
-				<div className="px-3 py-2.5 border-b border-[#38383A]">
-					<div className="flex items-center gap-1.5">
-						<span className="text-[13.5px] font-semibold text-white">
+				<Hairline inset={16} />
+				<div className="flex items-center gap-3 px-4 py-3">
+					<div className="flex-1 min-w-0">
+						<div className="text-[14px] font-semibold text-white truncate">
 							Qwen 3 1.7B
-						</span>
-						<span className="ml-auto text-[9.5px] font-bold uppercase text-purple-300 bg-accent/15 rounded-full px-2 py-0.5">
+						</div>
+						<div className="flex items-center gap-1.5 mt-1.5">
+							<span className="flex items-center gap-1 rounded-full bg-[#2C2C2E] px-2 py-0.5 text-[9.5px] font-medium text-[#AAAAAA]">
+								<Cpu className="w-[9px] h-[9px]" />
+								1.7B
+							</span>
+						</div>
+					</div>
+					<div className="shrink-0 flex items-center gap-2">
+						<span className="rounded-lg border border-accent/50 px-2.5 py-1 text-[10.5px] font-semibold text-accent">
 							Use
 						</span>
-					</div>
-					<div className="mt-1.5 flex items-center gap-1.5">
-						<SizeChip label="1.7B" />
+						<Trash2 className="w-[16px] h-[16px] text-[#FF3B30]" />
 					</div>
 				</div>
 			</GroupCard>
-
-			<div className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[0.08em] uppercase text-[#9E9EA4]">
-				Transcription
+			<div className="px-5 pt-1.5 text-[10.5px] text-[#8E8E93] leading-snug">
+				Powers the Write tab and AI Chat — text models answer entirely on
+				this device.
 			</div>
+
+			<SectionLabel>TRANSCRIPTION MODELS</SectionLabel>
 			<GroupCard>
-				<div className="px-3 py-2.5 border-b border-[#38383A]">
-					<div className="flex items-center gap-1.5">
-						<span className="text-[13.5px] font-semibold text-white">
-							Whisper Tiny (English)
-						</span>
-						<Check className="ml-auto w-3.5 h-3.5 text-[#34C759]" />
-					</div>
-					<div className="mt-1.5 flex items-center gap-1.5">
-						<TagChip label="Whisper" />
-						<SizeChip label="57 MB" />
-					</div>
-				</div>
-				<div className="px-3 py-2.5">
-					<div className="flex items-center gap-1.5">
-						<span className="text-[13.5px] font-semibold text-white">
-							All-MiniLM-L6-v2
-						</span>
-						<Check className="ml-auto w-3.5 h-3.5 text-[#34C759]" />
-					</div>
-					<div className="mt-1.5 flex items-center gap-1.5">
-						<TagChip label="Embeddings" />
-						<SizeChip label="80 MB" />
-					</div>
-				</div>
+				<ModelRow
+					name="Whisper Tiny (English)"
+					tag="Whisper"
+					tagIcon={Mic}
+					size="57 MB"
+					right={<CircleCheck className="w-[19px] h-[19px] text-accent" />}
+				/>
 			</GroupCard>
 
-			<div className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[0.08em] uppercase text-[#9E9EA4]">
-				Image generation
-			</div>
+			<SectionLabel>TEXT EMBEDDINGS MODELS</SectionLabel>
 			<GroupCard>
-				<div className="px-3 py-2.5">
-					<div className="flex items-center gap-1.5">
-						<span className="text-[13.5px] font-semibold text-white">
-							SDXS 512 (DreamShaper)
-						</span>
-						<Download className="ml-auto w-3.5 h-3.5 text-accent" />
-					</div>
-					<div className="mt-1.5 flex items-center gap-1.5">
-						<TagChip label="Diffusion" />
-						<SizeChip label="1 step" />
-						<SizeChip label="1.6 GB" />
-					</div>
-				</div>
+				<ModelRow
+					name="All-MiniLM-L6-v2"
+					tag="Embeddings"
+					tagIcon={Brain}
+					size="80 MB"
+					right={<CircleCheck className="w-[19px] h-[19px] text-accent" />}
+				/>
+			</GroupCard>
+
+			<SectionLabel>IMAGE GENERATION MODELS</SectionLabel>
+			<GroupCard>
+				<ModelRow
+					name="SDXS 512 (DreamShaper)"
+					tag="Diffusion"
+					tagIcon={ImageIcon}
+					steps="1 step"
+					size="1.6 GB"
+					right={<Download className="w-[19px] h-[19px] text-accent" />}
+				/>
 			</GroupCard>
 		</div>
-	</div>
+
+		<GlassBar centre="4 of 17 models" right={<Plus className="w-[20px] h-[20px]" />} />
+	</Screen>
 );

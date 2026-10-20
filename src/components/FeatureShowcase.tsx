@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useTransform, useScroll, useSpring, useMotionValue } from "framer-motion";
+import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "./screens";
 import {
 	ScreenFolders,
-	ScreenLock,
+	ScreenNotes,
 	ScreenEditor,
 	ScreenSearch,
 	ScreenTasks,
@@ -45,7 +45,7 @@ const features = [
 		],
 		color: "#34d399",
 		align: "right" as const,
-		screen: <ScreenLock />,
+		screen: <ScreenNotes />,
 	},
 	{
 		id: "editor",
@@ -126,56 +126,27 @@ const PhoneFrame = ({ children }: { children: React.ReactNode }) => (
 export default function FeatureShowcase() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [activeFeature, setActiveFeature] = useState(0);
+
 	/*
-	 * How far the phone has to travel to sit on the opposite side of the
-	 * screen from the text. On a wide screen the phone sits against one edge
-	 * and the copy against the other, so the two never collide; on a narrow
-	 * one the phone stays in the middle and the copy scrolls over it on a
-	 * blurred card.
+	 * The device stays exactly where it is. A phone that slides across the
+	 * screen while the copy scrolls past it reads as a glitch; a device that
+	 * holds its ground while the copy moves around it reads as a product
+	 * page. The only movement left is a few degrees of tilt with the mouse,
+	 * which is enough to feel alive and not enough to notice.
 	 */
-	const [shift, setShift] = useState(0);
-	const { scrollYProgress } = useScroll({
-		target: containerRef,
-		offset: ["start start", "end end"],
-	});
-
-	const rotateY = useTransform(scrollYProgress, [0, 1], [0, -18]);
-	const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.04, 1]);
-
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
-	const springConfig = { stiffness: 100, damping: 30 };
-	const rotateXSpring = useSpring(
-		useTransform(mouseY, [-0.5, 0.5], [6, -6]),
+	const springConfig = { stiffness: 120, damping: 26 };
+	const rotateX = useSpring(
+		useTransform(mouseY, [-0.5, 0.5], [3, -3]),
 		springConfig,
 	);
-	const rotateYSpring = useSpring(
-		useTransform(mouseX, [-0.5, 0.5], [-6, 6]),
+	const rotateY = useSpring(
+		useTransform(mouseX, [-0.5, 0.5], [-3, 3]),
 		springConfig,
 	);
 
-	/* Which side of the screen the phone sits on — opposite the copy. */
-	const side = useMotionValue(0);
-	const sideSpring = useSpring(side, { stiffness: 70, damping: 20 });
-
 	useEffect(() => {
-		side.set(features[activeFeature].align === "left" ? shift : -shift);
-	}, [activeFeature, shift, side]);
-
-	const combinedRotateX = useTransform(() => rotateXSpring.get());
-	const combinedRotateY = useTransform(() => rotateY.get() + rotateYSpring.get());
-
-	useEffect(() => {
-		const measure = () => {
-			const width = window.innerWidth;
-			if (width < 1024) {
-				setShift(0);
-				return;
-			}
-			const half = width / 2;
-			setShift(Math.max(0, half - 160 - 120));
-		};
-
 		const handleScroll = () => {
 			if (!containerRef.current) return;
 			const sections = features.map((f) =>
@@ -202,53 +173,50 @@ export default function FeatureShowcase() {
 
 		window.addEventListener("scroll", handleScroll, { passive: true });
 		window.addEventListener("mousemove", onMouseMove);
-		window.addEventListener("resize", measure);
 		handleScroll();
-		measure();
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("mousemove", onMouseMove);
-			window.removeEventListener("resize", measure);
 		};
 	}, []);
+
+	const ease = [0.22, 1, 0.36, 1] as const;
 
 	return (
 		<div ref={containerRef} className="relative w-full bg-ink">
 			{/*
-			 * On a wide screen the phone sticks in the middle of the viewport
-			 * and the copy scrolls past it. On a narrow one the sticky phone
-			 * would be in the way of the copy, so each feature carries its own
-			 * phone inline and the page scrolls normally.
+			 * On a wide screen the device holds the middle of the window and
+			 * the copy works the space either side of it. On a narrow one
+			 * there is no room for that, so each feature carries its own
+			 * device inline and the page scrolls normally.
 			 */}
-			<div className="sticky top-0 h-screen hidden lg:flex items-center justify-center overflow-hidden z-10 perspective-2000">
-				{/* Ambient glow, tinted by the active feature and following the phone */}
+			<div className="sticky top-0 h-screen hidden xl:flex items-center justify-center overflow-hidden z-10 perspective-2000">
+				{/* Ambient glow, tinted by the active feature */}
 				<div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
 					<motion.div
-						className="w-[560px] h-[560px] rounded-full blur-[150px] shrink-0"
+						className="w-[620px] h-[620px] rounded-full blur-[150px] shrink-0"
 						animate={{ backgroundColor: features[activeFeature].color }}
-						transition={{ duration: 0.8 }}
-						style={{ opacity: 0.18, x: sideSpring }}
+						transition={{ duration: 0.9, ease }}
+						style={{ opacity: 0.2 }}
 					></motion.div>
 				</div>
 
-				{/* The phone */}
+				{/* The device */}
 				<motion.div
-					style={{
-						x: sideSpring,
-						rotateX: combinedRotateX,
-						rotateY: combinedRotateY,
-						scale,
-						z: 100,
-					}}
-					className="relative transform-3d transition-transform duration-500"
+					style={{ rotateX, rotateY, z: 40 }}
+					className="relative transform-3d"
 				>
 					<PhoneFrame>
 						{features.map((feature, index) => (
 							<motion.div
 								key={feature.id}
 								initial={false}
-								animate={{ opacity: activeFeature === index ? 1 : 0 }}
-								transition={{ duration: 0.45 }}
+								animate={{
+									opacity: activeFeature === index ? 1 : 0,
+									scale: activeFeature === index ? 1 : 0.965,
+									y: activeFeature === index ? 0 : 10,
+								}}
+								transition={{ duration: 0.5, ease }}
 								className="absolute inset-0"
 							>
 								{feature.screen}
@@ -264,57 +232,56 @@ export default function FeatureShowcase() {
 					<div
 						id={`feature-${feature.id}`}
 						key={feature.id}
-						className={cn(
-							"min-h-screen flex items-start lg:items-center px-6 md:px-12 lg:px-20 py-16 lg:py-0 pointer-events-none",
-							feature.align === "left"
-								? "justify-center lg:justify-start"
-								: "justify-center lg:justify-end",
-						)}
+						className="min-h-screen flex flex-col items-center gap-10 px-6 md:px-12 py-16 xl:grid xl:grid-cols-[1fr_320px_1fr] xl:items-center xl:gap-8 xl:px-16 xl:py-0 pointer-events-none"
 					>
-						<div className="max-w-md pointer-events-auto w-full">
-							{/* The phone, inline, for narrow screens */}
-							<div className="lg:hidden mb-8 flex justify-center">
-								{/* The scale does not change the layout box, so the
-								    space it leaves behind is taken back here. */}
-								<div className="scale-[0.78] origin-top -mb-[145px]">
-									<PhoneFrame>{feature.screen}</PhoneFrame>
-								</div>
+						{/* The device, inline, for narrow screens */}
+						<div className="xl:hidden flex justify-center w-full">
+							{/* The scale does not change the layout box, so the
+							    space it leaves behind is taken back here. */}
+							<div className="scale-[0.78] origin-top -mb-[145px]">
+								<PhoneFrame>{feature.screen}</PhoneFrame>
 							</div>
-
-							<motion.div
-								initial={{ opacity: 0, y: 30 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6 }}
-								className="bg-black/70 backdrop-blur-xl p-7 rounded-3xl border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)] lg:bg-transparent lg:backdrop-blur-none lg:p-0 lg:border-none lg:shadow-none transition-all duration-300"
-							>
-								<span
-									className="eyebrow inline-block mb-4"
-									style={{ color: feature.color }}
-								>
-									{feature.eyebrow}
-								</span>
-								<h2 className="text-4xl md:text-6xl font-bold mb-5 text-white tracking-tight leading-[1.05]">
-									{feature.title}
-								</h2>
-								<p className="text-lg text-zinc-400 leading-relaxed">
-									{feature.description}
-								</p>
-								<ul className="mt-7 space-y-3">
-									{feature.points.map((point) => (
-										<li
-											key={point}
-											className="flex gap-3 text-[15px] text-zinc-300"
-										>
-											<ArrowRight
-												className="w-4 h-4 mt-1 shrink-0"
-												style={{ color: feature.color }}
-											/>
-											<span>{point}</span>
-										</li>
-									))}
-								</ul>
-							</motion.div>
 						</div>
+
+						<motion.div
+							initial={{ opacity: 0, y: 28 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ amount: 0.4, margin: "-10% 0px -10% 0px" }}
+							transition={{ duration: 0.7, ease }}
+							className={cn(
+								"w-full max-w-xl xl:max-w-md pointer-events-auto",
+								feature.align === "left"
+									? "xl:col-start-1 xl:justify-self-start"
+									: "xl:col-start-3 xl:justify-self-end",
+							)}
+						>
+							<span
+								className="eyebrow inline-block mb-4"
+								style={{ color: feature.color }}
+							>
+								{feature.eyebrow}
+							</span>
+							<h2 className="text-4xl md:text-6xl font-bold mb-5 text-white tracking-tight leading-[1.05]">
+								{feature.title}
+							</h2>
+							<p className="text-lg text-zinc-400 leading-relaxed">
+								{feature.description}
+							</p>
+							<ul className="mt-7 space-y-3">
+								{feature.points.map((point) => (
+									<li
+										key={point}
+										className="flex gap-3 text-[15px] text-zinc-300"
+									>
+										<ArrowRight
+											className="w-4 h-4 mt-1 shrink-0"
+											style={{ color: feature.color }}
+										/>
+										<span>{point}</span>
+									</li>
+								))}
+							</ul>
+						</motion.div>
 					</div>
 				))}
 			</div>
