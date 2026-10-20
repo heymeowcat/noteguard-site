@@ -27,8 +27,7 @@ import {
 	Underline,
 	Heading1,
 	Sparkles,
-	Brain,
-	Images,
+	BrainCircuit,
 	AlertCircle,
 	Table,
 	Code,
@@ -143,6 +142,31 @@ const FieldSearch = ({ placeholder }: { placeholder: string }) => (
 );
 
 /**
+ * The picture frame with a magnifier breaking its lower-left corner — the
+ * app's "search in images" button. Lucide has no single icon for it, so it
+ * is drawn here rather than approximated with the wrong shape.
+ */
+const ImageSearchIcon = ({ className }: { className?: string }) => (
+	<svg
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth={1.9}
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		className={className}
+		aria-hidden="true"
+	>
+		<path d="M21 15.5V7a2 2 0 0 0-2-2H9.5" />
+		<path d="M3 10.5V17a2 2 0 0 0 2 2h6.5" />
+		<circle cx="13.8" cy="7.6" r="1.5" />
+		<path d="m21 15.5-3.2-3.2a1.9 1.9 0 0 0-2.7 0L9.4 18" />
+		<circle cx="8.4" cy="14.4" r="3.1" />
+		<path d="m6.1 16.7-2.2 2.2" />
+	</svg>
+);
+
+/**
  * The Search screen's box: a bordered field that turns accent when focused.
  * The note list uses the same box with the two AI mode buttons inside it.
  */
@@ -156,17 +180,20 @@ const BoxSearch = ({
 	modes?: boolean;
 }) => (
 	<div
-		className="mx-4 flex items-center gap-2 rounded-[10px] border bg-[#1C1C1E] px-3 h-[38px]"
+		className="mx-4 flex items-center gap-2.5 rounded-[10px] border bg-[#1C1C1E] px-3 h-[38px]"
 		style={{ borderColor: focused ? A.accent : A.separator }}
 	>
 		<Search className="w-[15px] h-[15px] text-[#8E8E93] shrink-0" />
+		{focused && (
+			<span className="w-px h-[15px] bg-accent shrink-0 -ml-1"></span>
+		)}
 		<span className="text-[13px] text-[#8E8E93] truncate flex-1">
 			{placeholder}
 		</span>
 		{modes && (
 			<>
-				<Brain className="w-[15px] h-[15px] text-[#8E8E93] shrink-0" />
-				<Images className="w-[15px] h-[15px] text-[#8E8E93] shrink-0" />
+				<BrainCircuit className="w-[16px] h-[16px] text-[#8E8E93] shrink-0" />
+				<ImageSearchIcon className="w-[16px] h-[16px] text-[#8E8E93] shrink-0" />
 			</>
 		)}
 	</div>
@@ -426,7 +453,13 @@ export const ScreenFolders = () => (
  * actually searched: the field at the top takes text, and the two buttons
  * inside it switch to searching by meaning and inside images.
  */
-const NoteListBody = ({ locked }: { locked?: boolean }) => (
+const NoteListBody = ({
+	locked,
+	focused,
+}: {
+	locked?: boolean;
+	focused?: boolean;
+}) => (
 	<>
 		<NavHeader
 			left={<Back label="Folders" />}
@@ -434,7 +467,7 @@ const NoteListBody = ({ locked }: { locked?: boolean }) => (
 		/>
 		<LargeTitle>Notes</LargeTitle>
 
-		<BoxSearch placeholder="Search" modes />
+		<BoxSearch placeholder="Search" modes focused={focused} />
 
 		<div className="px-5 pt-3 pb-1.5 text-[15px] font-bold text-white">
 			Today
@@ -466,7 +499,7 @@ const NoteListBody = ({ locked }: { locked?: boolean }) => (
 /** The note list, as the app draws it. */
 export const ScreenNotes = () => (
 	<Screen>
-		<NoteListBody />
+		<NoteListBody focused />
 
 		<GlassBar
 			left={<MessageSquare className="w-[20px] h-[20px]" />}
