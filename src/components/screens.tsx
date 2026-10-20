@@ -15,7 +15,6 @@ import {
 	EllipsisVertical,
 	ChevronRight,
 	ChevronLeft,
-	SlidersHorizontal,
 	CheckCircle2,
 	CircleCheck,
 	Calendar,
@@ -423,12 +422,12 @@ export const ScreenFolders = () => (
 );
 
 /**
- * The note list with the Unlock Note dialog over it. This is the moment the
- * app asks for the key: nothing about the note is shown until the PIN is
- * typed, and the PIN is the only copy of it that exists.
+ * The note list. The Folders screen opens it, and it is where the vault is
+ * actually searched: the field at the top takes text, and the two buttons
+ * inside it switch to searching by meaning and inside images.
  */
-export const ScreenLock = () => (
-	<Screen>
+const NoteListBody = ({ locked }: { locked?: boolean }) => (
+	<>
 		<NavHeader
 			left={<Back label="Folders" />}
 			right={<Overflow />}
@@ -441,8 +440,50 @@ export const ScreenLock = () => (
 			Today
 		</div>
 		<Card>
-			<NoteRow title="Locked Note" date="4:41 AM" snippet="—" locked />
+			{locked && (
+				<>
+					<NoteRow title="Locked Note" date="4:41 AM" snippet="—" locked />
+					<Hairline inset={16} />
+				</>
+			)}
+			<NoteRow
+				title="Kyoto trip plan"
+				date="10:42 AM"
+				snippet="Fushimi Inari before the crowds, then the grove."
+				image
+			/>
+			<Hairline inset={16} />
+			<NoteRow
+				title="Reading list"
+				date="4:40 AM"
+				snippet="Six books for the winter, and the order to read them in."
+				badge
+			/>
 		</Card>
+	</>
+);
+
+/** The note list, as the app draws it. */
+export const ScreenNotes = () => (
+	<Screen>
+		<NoteListBody />
+
+		<GlassBar
+			left={<MessageSquare className="w-[20px] h-[20px]" />}
+			centre="2 notes"
+			right={<SquarePen className="w-[20px] h-[20px]" />}
+		/>
+	</Screen>
+);
+
+/**
+ * The note list with the Unlock Note dialog over it. This is the moment the
+ * app asks for the key: nothing about the note is shown until the PIN is
+ * typed, and the PIN is the only copy of it that exists.
+ */
+export const ScreenLock = () => (
+	<Screen>
+		<NoteListBody locked />
 
 		{/* The Unlock Note dialog */}
 		<div className="absolute inset-0 flex items-center justify-center px-4">
@@ -554,55 +595,6 @@ export const ScreenEditor = () => (
 			<Italic className="w-[17px] h-[17px] text-white shrink-0" />
 			<Underline className="w-[17px] h-[17px] text-white shrink-0" />
 			<div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#1E1E1E] to-transparent"></div>
-		</div>
-	</Screen>
-);
-
-/** The Search screen, with the mode chips. */
-export const ScreenSearch = () => (
-	<Screen>
-		<NavHeader
-			left={<Back />}
-			title="Search"
-			right={<SlidersHorizontal className="w-[18px] h-[18px]" />}
-		/>
-
-		<BoxSearch placeholder="Search by meaning" focused />
-
-		<div className="flex gap-2 px-4 mt-2.5">
-			<Pill label="Text" />
-			<Pill label="By meaning" active icon={Brain} />
-			<Pill label="In images" icon={Images} />
-		</div>
-
-		<div className="flex items-center gap-1.5 px-4 mt-2.5 text-[10.5px] text-[#8E8E93] overflow-hidden whitespace-nowrap">
-			<CircleCheck className="w-[13px] h-[13px] text-[#34C759] shrink-0" />
-			<span>Search by meaning</span>
-			<span className="text-[#38383A]">·</span>
-			<span>All-MiniLM-L6-v2</span>
-			<span className="text-[#38383A]">·</span>
-			<span className="text-[#34C759]">Selected</span>
-			<ChevronRight className="w-[13px] h-[13px] shrink-0" />
-		</div>
-
-		<div className="flex-1 overflow-hidden">
-			<NoteRow
-				title="Notes on the offline-first idea"
-				date="10:42 AM"
-				snippet="A local-first tool owns the file, not the account"
-			/>
-			<Hairline inset={16} />
-			<NoteRow
-				title="Why I keep a paper notebook"
-				date="Yesterday"
-				snippet="It cannot be synced, which is the point"
-			/>
-			<Hairline inset={16} />
-			<NoteRow
-				title="Backup strategy"
-				date="Tuesday"
-				snippet="Copy the folder. That is the whole backup."
-			/>
 		</div>
 	</Screen>
 );

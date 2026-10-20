@@ -6,7 +6,7 @@ import {
 	ScreenFolders,
 	ScreenLock,
 	ScreenEditor,
-	ScreenSearch,
+	ScreenNotes,
 	ScreenTasks,
 	ScreenAI,
 } from "./screens";
@@ -75,7 +75,7 @@ const features = [
 		],
 		color: "#f472b6",
 		align: "right" as const,
-		screen: <ScreenSearch />,
+		screen: <ScreenNotes />,
 	},
 	{
 		id: "tasks",
