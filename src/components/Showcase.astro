@@ -276,28 +276,12 @@ const features = [
 	}
 
 	/*
-		Where a browser can drive an animation from the scroll position, the
-		copy rises as it comes into view. Where it cannot, the copy is simply
-		there — no hidden state waiting for script that never runs.
+		The copy is not animated on scroll. A scroll-driven animation ties the
+		position of the text to the scrollport, so anything that changes the
+		scrollport — the browser chrome appearing, a rotation, a pinch zoom —
+		moves the text on its own. That reads as the page sliding away
+		underneath you, which is worse than the copy simply being there.
 	*/
-	@supports (animation-timeline: view()) {
-		.feature-copy {
-			animation: feature-rise linear both;
-			animation-timeline: view();
-			animation-range: entry 5% cover 30%;
-		}
-	}
-
-	@keyframes feature-rise {
-		from {
-			opacity: 0;
-			transform: translateY(28px);
-		}
-		to {
-			opacity: 1;
-			transform: none;
-		}
-	}
 </style>
 
 <script>

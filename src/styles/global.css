@@ -33,17 +33,6 @@
 
 @layer components {
 	/*
-	 * The sections below the fold are skipped until they are close to the
-	 * viewport, so the browser paints the first screen instead of the whole
-	 * page. `auto` in contain-intrinsic-size remembers the last real size,
-	 * so nothing jumps when a section is measured for the first time.
-	 */
-	.defer-render {
-		content-visibility: auto;
-		contain-intrinsic-size: auto 720px;
-	}
-
-	/*
 	 * The legal pages read long. Tailwind's typography plugin is not in this
 	 * project, so the reading styles live here instead — one rule set that
 	 * both the privacy policy and the terms use.
