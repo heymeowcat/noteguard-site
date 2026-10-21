@@ -1,0 +1,156 @@
+---
+import { ICONS } from "../../lib/mockup-icons";
+
+/*
+ * The AI Models screen, with the real catalog. Text model rows carry the
+ * chip and cloud icons with their figures, then "Featured", "Reasoning" and
+ * a filled "Active" pill.
+ */
+const chips = ["All", "Text", "Transcription", "Embeddings"];
+---
+
+<div class="h-full w-full flex flex-col overflow-hidden font-sans bg-black">
+	<!-- Header -->
+	<div class="flex items-center gap-1.5 px-2 pt-2.5 pb-1.5 shrink-0">
+		<div class="flex items-center gap-0.5 text-accent">
+			<Fragment set:html={ICONS.chevronLeft} />
+			<span class="text-[14px] -ml-1">Settings</span>
+		</div>
+	</div>
+
+	<div class="px-5 pt-1 pb-2 text-[27px] font-bold text-white tracking-tight">
+		AI Models
+	</div>
+
+	<!-- Downloaded / Available -->
+	<div class="mx-4 flex gap-0.5 rounded-[9px] p-0.5" style="background-color:#1C1C1E;">
+		<div
+			class="flex-1 text-center text-[12px] font-semibold rounded-[7px] py-[6px] px-2 whitespace-nowrap text-white"
+			style="background-color:#48484A;"
+		>
+			Downloaded
+		</div>
+		<div
+			class="flex-1 text-center text-[12px] font-semibold rounded-[7px] py-[6px] px-2 whitespace-nowrap text-[#8E8E93]"
+		>
+			Available
+		</div>
+	</div>
+
+	<!-- The category chips scroll, exactly as they do in the app -->
+	<div class="relative mt-3">
+		<div class="flex gap-2 px-4 overflow-hidden">
+			{
+				chips.map((chip, index) => (
+					<div
+						class:list={[
+							"rounded-full px-3 h-[28px] flex items-center text-[12px] font-semibold whitespace-nowrap border",
+							index === 0
+								? "border-accent bg-accent/10 text-accent"
+								: "border-white/12 text-[#8E8E93]",
+						]}
+					>
+						{chip}
+					</div>
+				))
+			}
+		</div>
+		<div
+			class="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent"
+		>
+		</div>
+	</div>
+
+	<div class="px-5 pt-4 pb-1.5 text-[10px] font-semibold tracking-[0.6px] text-[#8E8E93]">
+		TEXT MODELS
+	</div>
+
+	<div class="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+		<!-- The active model -->
+		<div class="px-4 py-3 flex items-start gap-3">
+			<div class="flex-1 min-w-0">
+				<div class="text-[15px] font-bold text-white truncate">Qwen 3 1.7B</div>
+				<div class="flex items-center gap-2.5 mt-2 flex-wrap">
+					<span class="flex items-center gap-1 text-[10.5px] text-white">
+						<Fragment set:html={ICONS.cpu} />
+						1.70 B
+					</span>
+					<span class="flex items-center gap-1 text-[10.5px] text-white">
+						<Fragment set:html={ICONS.cloud} />
+						2.20 GB
+					</span>
+					<span
+						class="flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[10.5px] font-semibold text-accent"
+					>
+						<Fragment set:html={ICONS.star} />
+						Featured
+					</span>
+				</div>
+				<div class="flex items-center gap-2 mt-1.5">
+					<span
+						class="flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[10.5px] font-semibold text-accent"
+					>
+						<Fragment set:html={ICONS.bulb} />
+						Reasoning
+					</span>
+					<span
+						class="rounded-full bg-accent px-2 py-0.5 text-[10.5px] font-semibold text-white"
+					>
+						Active
+					</span>
+				</div>
+			</div>
+			<div class="shrink-0 flex items-center gap-2.5 mt-1">
+				<span class="text-accent"><Fragment set:html={ICONS.circleCheck} /></span>
+				<span class="text-[#FF3B30]"><Fragment set:html={ICONS.trashSmall} /></span>
+			</div>
+		</div>
+
+		<div class="h-px bg-[#38383A] ml-4"></div>
+
+		<!-- Another downloaded model -->
+		<div class="px-4 py-3 flex items-start gap-3">
+			<div class="flex-1 min-w-0">
+				<div class="text-[15px] font-bold text-white truncate">Qwen 3 0.6B</div>
+				<div class="flex items-center gap-2.5 mt-2 flex-wrap">
+					<span class="flex items-center gap-1 text-[10.5px] text-white">
+						<Fragment set:html={ICONS.cpu} />
+						0.60 B
+					</span>
+					<span class="flex items-center gap-1 text-[10.5px] text-white">
+						<Fragment set:html={ICONS.cloud} />
+						0.90 GB
+					</span>
+					<span
+						class="flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[10.5px] font-semibold text-accent"
+					>
+						<Fragment set:html={ICONS.bulb} />
+						Reasoning
+					</span>
+				</div>
+			</div>
+			<span class="text-[#FF3B30] shrink-0 mt-1">
+				<Fragment set:html={ICONS.trashSmall} />
+			</span>
+		</div>
+	</div>
+
+	<div class="px-5 pt-2 text-[11.5px] text-[#8E8E93] leading-snug">
+		Powers the Write tab and AI Chat — text models answer entirely on this
+		device.
+	</div>
+
+	<!-- The glass bar -->
+	<div
+		class="mt-auto flex items-center justify-between px-5 py-2.5"
+		style="background-color:rgba(28,28,30,0.72);border-top-width:1px;border-top-color:rgba(255,255,255,0.18);"
+	>
+		<span class="w-6"></span>
+		<span class="flex-1 text-center text-[11.5px] text-[#8E8E93]">
+			2 of 22 models
+		</span>
+		<span class="w-6 text-accent flex justify-end">
+			<Fragment set:html={ICONS.plus} />
+		</span>
+	</div>
+</div>

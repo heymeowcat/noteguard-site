@@ -1,0 +1,76 @@
+---
+import { ICONS } from "../../lib/mockup-icons";
+
+/*
+ * The Tasks screen, grouped by date. The count sits at the far right of the
+ * section heading, and an open task shows an empty square.
+ */
+---
+
+<div class="h-full w-full flex flex-col overflow-hidden font-sans bg-black">
+	<!-- Header -->
+	<div class="flex items-center gap-1.5 px-2 pt-2.5 pb-1.5 shrink-0">
+		<div class="flex items-center gap-0.5 text-accent">
+			<Fragment set:html={ICONS.chevronLeft} />
+			<span class="text-[14px] -ml-1">Folders</span>
+		</div>
+		<div class="flex-1"></div>
+		<span class="text-[14px] text-accent">Show done</span>
+	</div>
+
+	<div class="px-5 pt-1 pb-2 text-[27px] font-bold text-white tracking-tight">
+		Tasks
+	</div>
+
+	<div class="px-5 pb-2.5 text-[12.5px] text-[#AAAAAA]">2 open</div>
+
+	<!-- By date / By note -->
+	<div class="self-start ml-5">
+		<div
+			class="flex gap-0.5 rounded-[9px] p-0.5"
+			style="background-color:#2C2C2E;"
+		>
+			<div
+				class="flex-1 text-center text-[12px] font-semibold rounded-[7px] py-[6px] px-2 whitespace-nowrap text-white"
+				style="background-color:#1C1C1E;"
+			>
+				By date
+			</div>
+			<div
+				class="flex-1 text-center text-[12px] font-semibold rounded-[7px] py-[6px] px-2 whitespace-nowrap text-[#8E8E93]"
+			>
+				By note
+			</div>
+		</div>
+	</div>
+
+	<!-- The section heading, with its count pushed to the far right -->
+	<div class="flex items-center px-5 pt-4 pb-1.5">
+		<span class="flex-1 text-[10.5px] font-bold tracking-[0.4px] text-[#8E8E93]">
+			NO DATE
+		</span>
+		<span class="text-[10.5px] font-bold text-[#8E8E93]">2</span>
+	</div>
+
+	<div class="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+		{
+			["test", "test 2"].map((task, index) => (
+				<>
+					{index > 0 && <div class="h-px bg-[#38383A] ml-4" />}
+					<div class="flex items-start gap-2.5 px-4 py-3">
+						<span class="text-white shrink-0 mt-px">
+							<Fragment set:html={ICONS.square} />
+						</span>
+						<div class="flex-1 min-w-0">
+							<p class="text-[14px] leading-[1.35] text-white">{task}</p>
+							<p class="text-[11.5px] text-[#AAAAAA] mt-0.5">Testing</p>
+						</div>
+						<span class="text-[#AAAAAA] shrink-0 mt-1">
+							<Fragment set:html={ICONS.calendar} />
+						</span>
+					</div>
+				</>
+			))
+		}
+	</div>
+</div>

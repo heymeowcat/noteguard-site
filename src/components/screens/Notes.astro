@@ -1,0 +1,171 @@
+---
+import { ICONS } from "../../lib/mockup-icons";
+
+/*
+ * The note list — the screen the vault is searched from and the one a
+ * locked note shows up in. The field at the top takes text, and the two
+ * buttons inside it switch to searching by meaning and inside images.
+ */
+const { locked = false, dialog = false } = Astro.props;
+---
+
+<div class="h-full w-full flex flex-col overflow-hidden font-sans bg-black">
+	<!-- Header -->
+	<div class="flex items-center gap-1.5 px-2 pt-2.5 pb-1.5 shrink-0">
+		<div class="flex items-center gap-0.5 text-accent">
+			<Fragment set:html={ICONS.chevronLeft} />
+			<span class="text-[14px] -ml-1">Folders</span>
+		</div>
+		<div class="flex-1"></div>
+		<div
+			class="w-[19px] h-[19px] rounded-full border-[1.8px] border-accent flex items-center justify-center gap-[2px]"
+			aria-hidden="true"
+		>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+		</div>
+	</div>
+
+	<div class="px-5 pt-1 pb-2 text-[27px] font-bold text-white tracking-tight">
+		Notes
+	</div>
+
+	<!-- Search field, with the two AI mode buttons inside it -->
+	<div
+		class="mx-4 flex items-center gap-2.5 rounded-[10px] border bg-[#1C1C1E] px-3 h-[38px]"
+		style={`border-color:${dialog ? "#38383A" : "#BB86FC"}`}
+	>
+		<Fragment set:html={ICONS.magnify} />
+		{
+			!dialog && (
+				<span class="w-px h-[15px] bg-accent shrink-0 -ml-1" />
+			)
+		}
+		<span class="text-[13px] text-[#8E8E93] truncate flex-1">Search</span>
+		<Fragment set:html={ICONS.brain} />
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.9"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="w-[16px] h-[16px] text-[#8E8E93] shrink-0"
+			aria-hidden="true"
+		>
+			<path d="M21 15.5V7a2 2 0 0 0-2-2H9.5"></path>
+			<path d="M3 10.5V17a2 2 0 0 0 2 2h6.5"></path>
+			<circle cx="13.8" cy="7.6" r="1.5"></circle>
+			<path d="m21 15.5-3.2-3.2a1.9 1.9 0 0 0-2.7 0L9.4 18"></path>
+			<circle cx="8.4" cy="14.4" r="3.1"></circle>
+			<path d="m6.1 16.7-2.2 2.2"></path>
+		</svg>
+	</div>
+
+	<div class="px-5 pt-3 pb-1.5 text-[15px] font-bold text-white">Today</div>
+
+	<div class="mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]">
+		{
+			locked && (
+				<>
+					<div class="px-4 pr-3.5 py-2.5 flex items-center gap-3">
+						<div class="flex-1 min-w-0">
+							<div class="flex items-center gap-1.5">
+								<Fragment set:html={ICONS.lock} />
+								<span class="text-[14.5px] font-semibold tracking-[-0.3px] text-white truncate">
+									Locked Note
+								</span>
+							</div>
+							<div class="flex items-center gap-1.5 mt-0.5">
+								<span class="text-[11.5px] text-[#8E8E93] shrink-0 whitespace-nowrap">
+									4:41 AM
+								</span>
+								<span class="text-[11.5px] text-[#8E8E93] truncate">—</span>
+							</div>
+						</div>
+					</div>
+					<div class="h-px bg-[#38383A] ml-4"></div>
+				</>
+			)
+		}
+
+		<div class="px-4 pr-3.5 py-2.5 flex items-center gap-3">
+			<div class="flex-1 min-w-0">
+				<div class="flex items-center gap-1.5">
+					<span class="text-[14.5px] font-semibold tracking-[-0.3px] text-white truncate">
+						Kyoto trip plan
+					</span>
+				</div>
+				<div class="flex items-center gap-1.5 mt-0.5">
+					<span class="text-[11.5px] text-[#8E8E93] shrink-0 whitespace-nowrap">
+						10:42 AM
+					</span>
+					<span class="text-[11.5px] text-[#8E8E93] truncate">
+						Fushimi Inari before the crowds, then the grove.
+					</span>
+				</div>
+			</div>
+			<span class="h-[34px] w-[34px] rounded-lg bg-[#3a3a3c] shrink-0"></span>
+		</div>
+
+		<div class="h-px bg-[#38383A] ml-4"></div>
+
+		<div class="px-4 pr-3.5 py-2.5 flex items-center gap-3">
+			<div class="flex-1 min-w-0">
+				<div class="flex items-center gap-1.5">
+					<span class="text-[14.5px] font-semibold tracking-[-0.3px] text-white truncate">
+						Reading list
+					</span>
+				</div>
+				<div class="flex items-center gap-1.5 mt-0.5">
+					<span class="text-[11.5px] text-[#8E8E93] shrink-0 whitespace-nowrap">
+						4:40 AM
+					</span>
+					<span class="text-[11.5px] text-[#8E8E93] truncate">
+						Six books for the winter, and the order to read them in.
+					</span>
+					<Fragment set:html={ICONS.check} />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{
+		dialog && (
+			<div class="absolute inset-0 flex items-center justify-center px-4">
+				<div class="w-full rounded-2xl bg-[#141416] p-5">
+					<h3 class="text-[19px] font-bold text-white text-center">
+						Unlock Note
+					</h3>
+					<p class="mt-2.5 text-[12.5px] text-[#8E8E93] text-center">
+						Enter your PIN to view this note.
+					</p>
+					<div class="mt-5 rounded-xl bg-[#1C1C1E] h-[42px] flex items-center justify-center text-[13px] tracking-[0.35em] text-[#8E8E93]">
+						P I N
+					</div>
+					<div class="mt-4 flex gap-2.5">
+						<div class="flex-1 rounded-xl bg-accent py-2.5 text-center text-[13.5px] font-semibold text-white">
+							Cancel
+						</div>
+						<div class="flex-1 rounded-xl bg-[#1C1C1E] py-2.5 text-center text-[13.5px] font-semibold text-[#4A4A4E]">
+							Unlock
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	<!-- The glass bar -->
+	<div
+		class="mt-auto flex items-center justify-between px-5 py-2.5"
+		style="background-color:rgba(28,28,30,0.72);border-top-width:1px;border-top-color:rgba(255,255,255,0.18);"
+	>
+		<span class="w-6 text-accent"><Fragment set:html={ICONS.message} /></span>
+		<span class="flex-1 text-center text-[11.5px] text-[#8E8E93]">2 notes</span>
+		<span class="w-6 text-accent flex justify-end">
+			<Fragment set:html={ICONS.squarePen} />
+		</span>
+	</div>
+</div>

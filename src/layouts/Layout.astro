@@ -9,52 +9,106 @@ interface Props {
 	/** Hide the site navigation on pages that provide their own. */
 	hideNav?: boolean;
 	ogImageAlt?: string;
+	/** Set on pages that are part of the site but not the entry point. */
+	breadcrumbs?: { name: string; path: string }[];
+	/** Overrides the robots directive, for pages that should not be indexed. */
+	robots?: string;
+	/** Overrides the canonical URL, for pages that stand in for another. */
+	canonical?: string;
 }
 
 const {
 	title = "NoteGuard — Private, offline notes with on-device AI",
-	description = "NoteGuard is a private Android notes app. Notes are plain Markdown files in a folder you choose, locked notes are encrypted with the PIN you type, and every AI model runs on your device. No account, no cloud, no tracking.",
+	description = "A private Android notes app. Your notes are plain Markdown files in a folder you own, locked notes are encrypted with your PIN, and the AI runs on your device.",
 	structuredData,
 	hideNav = false,
 	ogImageAlt = "NoteGuard — private, offline notes for Android",
+	breadcrumbs = [],
+	robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+	canonical,
 } = Astro.props;
+
+const SITE_URL = Astro.site?.toString().replace(/\/$/, "") ?? "";
 
 /* The sitemap lists every page with a trailing slash, so the canonical
    URLs match it rather than pointing at a redirect. */
-const canonicalURL = new URL(
-	Astro.url.pathname.replace(/\/+$/, "") + "/",
-	Astro.site,
-);
-const ogImageURL = new URL(url("/og-image.png"), Astro.site);
+const canonicalURL = canonical
+	? new URL(canonical, Astro.site)
+	: new URL(Astro.url.pathname.replace(/\/+$/, "") + "/", Astro.site);
+const ogImageURL = new URL(url("/og-image.jpg"), Astro.site);
 const isHome = Astro.url.pathname.replace(/\/$/, "") === url("").replace(/\/$/, "");
-const jsonLd = structuredData
-	? Array.isArray(structuredData)
-		? structuredData
-		: [structuredData]
-	: [];
+
+const jsonLd = [
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"@id": `${SITE_URL}${url("/")}#website`,
+		url: `${SITE_URL}${url("/")}`,
+		name: site.name,
+		inLanguage: "en-US",
+		publisher: { "@id": `${SITE_URL}${url("/")}#publisher` },
+	},
+	{
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"@id": `${SITE_URL}${url("/")}#publisher`,
+		name: site.name,
+		url: `${SITE_URL}${url("/")}`,
+		sameAs: ["https://github.com/heymeowcat"],
+	},
+	...(structuredData
+		? Array.isArray(structuredData)
+			? structuredData
+			: [structuredData]
+		: []),
+	...(breadcrumbs.length
+		? [
+				{
+					"@context": "https://schema.org",
+					"@type": "BreadcrumbList",
+					itemListElement: [
+						{
+							"@type": "ListItem",
+							position: 1,
+							name: "Home",
+							item: `${SITE_URL}${url("/")}`,
+						},
+						...breadcrumbs.map((crumb, index) => ({
+							"@type": "ListItem",
+							position: index + 2,
+							name: crumb.name,
+							item: `${SITE_URL}${url(crumb.path)}`,
+						})),
+					],
+				},
+			]
+		: []),
+];
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en-US" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content={description} />
 		<meta name="author" content={site.author} />
-		<meta
-			name="robots"
-			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-		/>
+		<meta name="robots" content={robots} />
 		<link rel="canonical" href={canonicalURL} />
-		<link rel="sitemap" href={url("/sitemap-index.xml")} />
+		<link rel="sitemap" type="application/xml" href={url("/sitemap.xml")} />
+
+		<!--
+			Any asset or link that somehow arrives over plain http is upgraded
+			to https before it is used.
+		-->
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+		/>
 
 		<!-- Icons -->
-		<link
-			rel="icon"
-			type="image/svg+xml"
-			href={url("/favicon.svg")}
-		/>
-		<link rel="apple-touch-icon" href={url("/icon.png")} />
+		<link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
+		<link rel="apple-touch-icon" href={url("/apple-touch-icon.png")} />
 		<meta name="theme-color" content="#050505" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="application-name" content={site.name} />
@@ -99,12 +153,41 @@ const jsonLd = structuredData
 			))
 		}
 
+		{/*
+			Search Console and Bing verification. Set the token in the
+			deployment environment and the tag appears; without it, nothing
+			is emitted.
+		*/}
+		{
+			import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION && (
+				<meta
+					name="google-site-verification"
+					content={import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION}
+				/>
+			)
+		}
+		{
+			import.meta.env.PUBLIC_BING_SITE_VERIFICATION && (
+				<meta
+					name="msvalidate.01"
+					content={import.meta.env.PUBLIC_BING_SITE_VERIFICATION}
+				/>
+			)
+		}
+
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+			rel="preload"
+			as="font"
+			type="font/woff2"
+			href="https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2"
+			crossorigin
+		/>
+		<link
 			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
 		/>
 	</head>
 	<body class="bg-ink text-white antialiased font-display">
@@ -117,8 +200,8 @@ const jsonLd = structuredData
 					>
 						<a href={home()} class="flex items-center gap-2.5 shrink-0">
 							<img
-								src={url("/icon.png")}
-								alt=""
+								src={url("/logo.png")}
+								alt="NoteGuard"
 								width="28"
 								height="24"
 								class="w-7 h-auto rounded-md"
@@ -147,7 +230,13 @@ const jsonLd = structuredData
 							</li>
 							<li>
 								<a
-									href={url("/whats-new")}
+									href={isHome ? "#android" : home("android")}
+									class="hover:text-white transition-colors">Android</a
+								>
+							</li>
+							<li>
+								<a
+									href={url("/release-notes")}
 									class="hover:text-white transition-colors">Release notes</a
 								>
 							</li>
@@ -168,3 +257,12 @@ const jsonLd = structuredData
 		<slot />
 	</body>
 </html>
+
+<style is:global>
+	:root {
+		--font-outfit: "Outfit", sans-serif;
+	}
+	html {
+		font-family: var(--font-outfit);
+	}
+</style>
