@@ -1,0 +1,20 @@
+# Dependabot is set to open at most three pull requests a week, grouped
+# into one, because every merge used to trigger another run and the queue
+# filled up faster than it could be reviewed.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 3
+    groups:
+      dependencies:
+        patterns: ["*"]
+    commit-message:
+      prefix: "build(deps)"
+    labels:
+      - dependencies
