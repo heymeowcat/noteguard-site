@@ -40,7 +40,7 @@ const groups = [
 ];
 ---
 
-<section id="ai" class="relative py-24 md:py-32">
+<section id="ai" class="relative py-24 md:py-32 defer-render">
 	<div
 		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(45,212,191,0.12),_transparent_60%)] pointer-events-none"
 	>
@@ -63,7 +63,7 @@ const groups = [
 			</p>
 		</div>
 
-		<div class="mt-14 grid md:grid-cols-2 gap-5">
+		<div class="mt-14 grid grid-cols-1 md:grid-cols-2 gap-5">
 			{
 				groups.map((group) => (
 					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
@@ -75,7 +75,7 @@ const groups = [
 							{group.items.map((item: any) => (
 								<li class="flex items-center gap-2.5 text-[14px] text-zinc-300">
 									<span class="h-1 w-1 rounded-full bg-teal-400/70 shrink-0" />
-									<span class="truncate">{item.name}</span>
+									<span class="min-w-0 truncate">{item.name}</span>
 									<span class="ml-auto shrink-0 text-[12px] text-[#9E9EA4] tabular-nums">
 										{item.steps ? `${item.steps} · ` : ""}
 										{item.size}
@@ -95,7 +95,7 @@ const groups = [
 			<h3 class="text-2xl font-bold text-white">
 				On-device means on-device.
 			</h3>
-			<div class="mt-5 grid md:grid-cols-2 gap-x-10 gap-y-4">
+			<div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
 				<ul class="space-y-3.5">
 					{
 						[

@@ -1,0 +1,151 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Footer from "../components/Footer.astro";
+import { site, url } from "../lib/site";
+
+const facts = [
+	{ label: "Platform", value: "Android" },
+	{ label: "Price", value: "Free, no ads, no purchases" },
+	{ label: "Account", value: "None" },
+	{ label: "Analytics", value: "None" },
+	{ label: "Network use", value: "Only a link you paste yourself" },
+	{ label: "Encryption", value: "AES-256, PBKDF2-HMAC-SHA256 at 210,000 rounds" },
+	{ label: "Storage", value: "Plain Markdown files in a folder you choose" },
+	{ label: "AI", value: "Runs on the device, models downloaded by you" },
+	{ label: "Source", value: "Open, MIT" },
+];
+
+const boilerplate = `NoteGuard is a private notes app for Android. Your notes are
+plain Markdown files in a folder you choose, so they open in Obsidian and any
+other Markdown tool, and backing up means copying that folder. Notes you lock
+are encrypted with the PIN you type: the key is derived with PBKDF2-HMAC-SHA256
+at 210,000 rounds and nothing keeps a copy of the PIN, so a vault copied off
+the phone is unreadable without it. Every AI feature — chat, summaries,
+transcription, semantic search and image generation — runs on the device.
+There is no account, no server, no analytics and no advertising.`;
+---
+
+<Layout
+	title="NoteGuard — press kit, facts and links"
+	description="NoteGuard facts for writers and reviewers: a one-paragraph description, the numbers, where to download it, and the pages worth linking to."
+	breadcrumbs={[{ name: "Press kit", path: "/press/" }]}
+>
+	<main>
+		<PageHeader
+			eyebrow="Press kit"
+			title="NoteGuard, in short."
+			lede="Everything a writer, a reviewer or a podcast host needs to describe the app accurately, and the pages worth linking to when they do."
+			meta="Last updated: November 10, 2026."
+		/>
+
+		<div class="container mx-auto px-6 max-w-3xl pb-24">
+			<!-- The quotable paragraph -->
+			<section class="mb-14">
+				<h2 class="text-2xl font-bold text-white mb-4">The short version</h2>
+				<blockquote
+					class="rounded-2xl border border-purple-400/25 bg-purple-500/[0.06] p-6 text-[17px] leading-relaxed text-zinc-200"
+				>
+					{boilerplate}
+				</blockquote>
+				<p class="mt-4 text-sm text-[#9E9EA4]">
+					Free to copy, with or without attribution. If you are writing
+					about the app, please link to
+					<a
+						href={url("/")}
+						class="text-purple-300 underline underline-offset-4"
+						>the homepage</a
+					> rather than the Play listing.
+				</p>
+			</section>
+
+			<!-- The numbers -->
+			<section class="mb-14">
+				<h2 class="text-2xl font-bold text-white mb-4">The numbers</h2>
+				<dl class="rounded-2xl border border-white/8 overflow-hidden">
+					{
+						facts.map((fact) => (
+							<div class="flex flex-col sm:flex-row gap-1 sm:gap-6 px-5 py-3.5 border-b border-white/8 last:border-0">
+								<dt class="text-sm text-[#9E9EA4] sm:w-40 sm:shrink-0">
+									{fact.label}
+								</dt>
+								<dd class="text-[15px] text-zinc-200">{fact.value}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</section>
+
+			<!-- Where to link -->
+			<section class="mb-14">
+				<h2 class="text-2xl font-bold text-white mb-4">Where to link</h2>
+				<ul class="space-y-3.5">
+					{
+						[
+							{
+								href: url("/"),
+								label: "The homepage",
+								note: "The features, the security detail and the download button.",
+							},
+							{
+								href: url("/release-notes/"),
+								label: "The release notes",
+								note: "What the app does, in full, without the marketing words.",
+							},
+							{
+								href: url("/privacy-policy/"),
+								label: "The privacy policy",
+								note: "What is collected, which is nothing, and what is not.",
+							},
+							{
+								href: site.playUrl,
+								label: "The Google Play listing",
+								note: "Screenshots, the current version and the install button.",
+							},
+						].map((link) => (
+							<li class="flex gap-3">
+								<span class="mt-2.5 h-1 w-1 rounded-full bg-purple-400 shrink-0" />
+								<div>
+									<a
+										href={link.href}
+										class="text-[16px] font-medium text-white hover:text-purple-300 transition-colors"
+									>
+										{link.label}
+									</a>
+									<p class="text-[15px] text-zinc-400 leading-relaxed">
+										{link.note}
+									</p>
+								</div>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<!-- Screenshots -->
+			<section class="mb-14">
+				<h2 class="text-2xl font-bold text-white mb-4">Screenshots</h2>
+				<p class="text-[17px] text-zinc-400 leading-relaxed">
+					The Play listing carries the store screenshots. The pages above
+					draw the app's screens directly from the build, so a screenshot
+					of the homepage shows the same interface the listing does.
+				</p>
+			</section>
+
+			<!-- Contact -->
+			<section>
+				<h2 class="text-2xl font-bold text-white mb-4">Questions</h2>
+				<p class="text-[17px] text-zinc-400 leading-relaxed">
+					Anything not answered here, ask on the project's GitHub page at
+					<a
+						href="https://github.com/heymeowcat"
+						rel="noopener"
+						class="text-purple-300 underline underline-offset-4">github.com/heymeowcat</a
+					>. The app is free and has no account, so there is nothing to
+					sign up for and no one to ask for your details.
+				</p>
+			</section>
+		</div>
+	</main>
+	<Footer />
+</Layout>

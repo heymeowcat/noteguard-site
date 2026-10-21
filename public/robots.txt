@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://heymeowcat.is-a.dev/noteguard-site/sitemap-index.xml
+# Nothing here is private, and nothing needs to be crawled twice.
+Disallow: /404
+
+Sitemap: https://heymeowcat.is-a.dev/noteguard-site/sitemap.xml

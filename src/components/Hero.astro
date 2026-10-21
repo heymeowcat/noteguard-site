@@ -15,9 +15,9 @@ import { site, url } from "../lib/site";
 	</div>
 
 	<div class="container mx-auto px-6 relative z-10">
-		<div class="grid lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-16 items-center">
+		<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] gap-14 lg:gap-16 items-center">
 			<!-- Copy -->
-			<div>
+			<div class="min-w-0">
 				<p
 					class="inline-flex items-center gap-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 px-4 py-1.5 text-sm font-medium text-purple-300"
 				>
@@ -115,7 +115,7 @@ import { site, url } from "../lib/site";
 			</div>
 
 			<!-- The vault, shown honestly -->
-			<div class="relative">
+			<div class="relative min-w-0">
 				<div
 					class="absolute -inset-6 bg-purple-600/20 blur-[90px] rounded-full pointer-events-none"
 				>

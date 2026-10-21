@@ -11,7 +11,7 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === url("").replace(/\/$/, 
 			<div class="col-span-1 md:col-span-2">
 				<div class="flex items-center gap-3 mb-6">
 					<img
-						src={url("/icon.png")}
+						src={url("/logo.png")}
 						alt="NoteGuard"
 						width="32"
 						height="28"
@@ -62,9 +62,16 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === url("").replace(/\/$/, 
 					</li>
 					<li>
 						<a
-							href={url("/whats-new")}
+							href={url("/release-notes")}
 							class="text-zinc-400 hover:text-white transition-colors"
 							>Release notes</a
+						>
+					</li>
+					<li>
+						<a
+							href={url("/press")}
+							class="text-zinc-400 hover:text-white transition-colors"
+							>Press kit</a
 						>
 					</li>
 				</ul>

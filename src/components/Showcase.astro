@@ -1,0 +1,366 @@
+---
+import ScreenFolders from "./screens/Folders.astro";
+import ScreenNotes from "./screens/Notes.astro";
+import ScreenEditor from "./screens/Editor.astro";
+import ScreenTasks from "./screens/Tasks.astro";
+import ScreenAI from "./screens/AI.astro";
+
+/*
+ * The feature copy, in the order the showcase walks through it. The screens
+ * are drawn from the app's own dark theme and use the real labels it shows;
+ * they are illustrations, so they are marked aria-hidden.
+ *
+ * None of this needs a framework at runtime. The screens are rendered once
+ * at build time, the copy is plain markup, and the two things that move —
+ * which screen is showing, and the few degrees the device tilts with the
+ * pointer — are a dozen lines of script at the bottom of this file. The
+ * page therefore ships no framework JavaScript at all.
+ */
+const features = [
+	{
+		id: "vault",
+		eyebrow: "01 — The vault",
+		title: "Notes are files.",
+		description:
+			"Every note is a Markdown file in a folder you pick, with metadata in frontmatter. The vault opens straight in Obsidian, and backing up means copying that folder.",
+		points: [
+			"Plain Markdown with YAML frontmatter",
+			"Obsidian and other Markdown tools read it directly",
+			"Import a zipped Obsidian vault, or single .md files",
+		],
+		color: "#a855f7",
+		align: "left",
+		screen: "folders",
+	},
+	{
+		id: "key",
+		eyebrow: "02 — The lock",
+		title: "Your PIN is the key.",
+		description:
+			"Locking a note derives its key from the PIN you type and stores nothing else. A vault copied off the phone is useless without it — and a locked note still opens on a new phone.",
+		points: [
+			"PBKDF2-HMAC-SHA256, 210,000 rounds, one derivation per note",
+			"AES-256-CBC + HMAC-SHA256 for text, AES-256-GCM for media",
+			"Biometrics type the PIN for you — they are never the key",
+		],
+		color: "#34d399",
+		align: "right",
+		screen: "lock",
+	},
+	{
+		id: "editor",
+		eyebrow: "03 — The editor",
+		title: "An editor for writing.",
+		description:
+			"A Markdown editor written for people who write in Markdown all day: a formatting toolbar, a slash command menu, and blocks you can turn into something else. Callouts, pipe tables, footnotes, wiki links and backlinks, with find and replace.",
+		points: [
+			"Type / for headings, lists, callouts, tables and code",
+			"Long-press a block to change, move, duplicate or delete it",
+			"Undo, redo, smart Enter, and a links & backlinks panel",
+		],
+		color: "#60a5fa",
+		align: "left",
+		screen: "editor",
+	},
+	{
+		id: "search",
+		eyebrow: "04 — Search",
+		title: "Search that understands.",
+		description:
+			"Full-text search over the whole vault, semantic search that finds a note by what it means, and image search that finds a photo by describing it. Filters for folders, dates, pinned and locked state.",
+		points: [
+			"Text, by meaning, and in images",
+			"Advanced filters for folders, dates, pinned and locked notes",
+			"Embeddings are computed on the device, not on a server",
+		],
+		color: "#f472b6",
+		align: "right",
+		screen: "notes",
+	},
+	{
+		id: "tasks",
+		eyebrow: "05 — Tasks & history",
+		title: "Tasks, dates and history.",
+		description:
+			"Checklists with nesting and per-note progress, a vault-wide Tasks screen, due dates and reminders — plus git-like version history for every note and a recycle bin that keeps things for 30 days.",
+		points: [
+			"📅 for a due date, ⏰ for a reminder, in the task's own line",
+			"Overdue, Today, Tomorrow and the next seven days",
+			"Line diffs and one-tap restore, up to 500 versions per note",
+		],
+		color: "#fbbf24",
+		align: "left",
+		screen: "tasks",
+	},
+	{
+		id: "ai",
+		eyebrow: "06 — On-device AI",
+		title: "AI that stays on the phone.",
+		description:
+			"Chat with your notes, summarise, draft and generate images with models that run entirely on your device. Web search was removed on purpose: the only thing NoteGuard ever fetches is a link you paste yourself.",
+		points: [
+			"Local LLMs, Whisper, MiniLM, CLIP and diffusion models",
+			"A memory check warns you before a model that will not fit",
+			"Nothing heavy loads until you ask for it",
+		],
+		color: "#2dd4bf",
+		align: "right",
+		screen: "ai",
+	},
+];
+---
+
+<div class="relative w-full bg-ink" data-showcase data-active="0">
+	{/*
+		On a wide screen the device holds the middle of the window and the copy
+		works the space on either side of it. On a narrow one there is no room
+		for that, so each feature carries its own device inline and the page
+		scrolls normally.
+	*/}
+	<div
+		class="sticky top-0 h-screen hidden xl:flex items-center justify-center overflow-hidden z-10 perspective-2000"
+	>
+		<!-- Ambient glow, tinted by the active feature -->
+		<div
+			class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+		>
+			<div
+				class="w-[620px] h-[620px] rounded-full blur-[150px] shrink-0 transition-colors duration-700"
+				style={`background-color:${features[0].color};opacity:.2`}
+				data-glow
+			>
+			</div>
+		</div>
+
+		<!-- The device -->
+		<div class="relative transform-3d" data-device>
+			<div
+				class="relative w-[320px] h-[660px] bg-black rounded-[44px] shadow-2xl overflow-hidden border-[6px] border-[#1c1c1e]"
+				style="box-shadow: 0 0 0 2px #0f0f0f, 8px 10px 0 2px #0a0a0a, 14px 18px 0 2px #050505, 0 40px 70px -20px rgba(0,0,0,0.9), 0 0 60px -12px rgba(168,85,247,0.18);"
+			>
+				<div
+					class="absolute inset-0 rounded-[38px] ring-1 ring-white/10 z-50 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent"
+				>
+				</div>
+				<div class="absolute inset-0 bg-black">
+					{
+						features.map((feature, index) => (
+							<div
+								class="screen absolute inset-0"
+								data-screen={index}
+								aria-hidden="true"
+							>
+								{feature.screen === "folders" && <ScreenFolders />}
+								{feature.screen === "lock" && <ScreenNotes locked dialog />}
+								{feature.screen === "editor" && <ScreenEditor />}
+								{feature.screen === "notes" && <ScreenNotes />}
+								{feature.screen === "tasks" && <ScreenTasks />}
+								{feature.screen === "ai" && <ScreenAI />}
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- The feature copy -->
+	<div class="relative z-20">
+		{
+			features.map((feature) => (
+				<section
+					id={`feature-${feature.id}`}
+					data-feature
+					class:list={[
+						"min-h-screen flex flex-col items-center gap-10 px-6 md:px-12 py-16 xl:grid xl:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] xl:items-center xl:gap-8 xl:px-16 xl:py-0 pointer-events-none",
+					]}
+				>
+					{/* The device, inline, for narrow screens */}
+					<div class="xl:hidden flex justify-center w-full" aria-hidden="true">
+						<div class="scale-[0.78] origin-top -mb-[145px]">
+							<div
+								class="relative w-[320px] h-[660px] bg-black rounded-[44px] shadow-2xl overflow-hidden border-[6px] border-[#1c1c1e]"
+							>
+								<div
+									class="absolute inset-0 rounded-[38px] ring-1 ring-white/10 z-50 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent"
+								>
+								</div>
+								<div class="absolute inset-0 bg-black">
+									{feature.screen === "folders" && <ScreenFolders />}
+									{feature.screen === "lock" && <ScreenNotes locked dialog />}
+									{feature.screen === "editor" && <ScreenEditor />}
+									{feature.screen === "notes" && <ScreenNotes />}
+									{feature.screen === "tasks" && <ScreenTasks />}
+									{feature.screen === "ai" && <ScreenAI />}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class:list={[
+							"w-full max-w-md pointer-events-auto feature-copy",
+							feature.align === "left"
+								? "xl:col-start-1 xl:justify-self-start"
+								: "xl:col-start-3 xl:justify-self-end",
+						]}
+					>
+						<span class="eyebrow inline-block mb-4" style={`color:${feature.color}`}>
+							{feature.eyebrow}
+						</span>
+						<h2 class="text-4xl md:text-6xl font-bold mb-5 text-white tracking-tight leading-[1.05]">
+							{feature.title}
+						</h2>
+						<p class="text-lg text-zinc-400 leading-relaxed">
+							{feature.description}
+						</p>
+						<ul class="mt-7 space-y-3">
+							{feature.points.map((point) => (
+								<li class="flex gap-3 text-[15px] text-zinc-300">
+									<svg
+										class="w-4 h-4 mt-1 shrink-0"
+										style={`color:${feature.color}`}
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
+										<path d="M5 12h14" />
+										<path d="m12 5 7 7-7 7" />
+									</svg>
+									<span>{point}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				</section>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.screen {
+		opacity: 0;
+		transform: scale(0.965) translateY(10px);
+		transition:
+			opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+			transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	[data-showcase][data-active="0"] .screen[data-screen="0"],
+	[data-showcase][data-active="1"] .screen[data-screen="1"],
+	[data-showcase][data-active="2"] .screen[data-screen="2"],
+	[data-showcase][data-active="3"] .screen[data-screen="3"],
+	[data-showcase][data-active="4"] .screen[data-screen="4"],
+	[data-showcase][data-active="5"] .screen[data-screen="5"] {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* The device leans a few degrees with the pointer, and no further. */
+	[data-device] {
+		transform: perspective(2000px) rotateX(var(--tilt-x, 0deg))
+			rotateY(var(--tilt-y, 0deg));
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.perspective-2000 {
+		perspective: 2000px;
+	}
+	.transform-3d {
+		transform-style: preserve-3d;
+	}
+
+	/*
+		Where a browser can drive an animation from the scroll position, the
+		copy rises as it comes into view. Where it cannot, the copy is simply
+		there — no hidden state waiting for script that never runs.
+	*/
+	@supports (animation-timeline: view()) {
+		.feature-copy {
+			animation: feature-rise linear both;
+			animation-timeline: view();
+			animation-range: entry 5% cover 30%;
+		}
+	}
+
+	@keyframes feature-rise {
+		from {
+			opacity: 0;
+			transform: translateY(28px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	/*
+		Two things move in the showcase: which screen the device is showing,
+		and the few degrees it leans with the pointer. Both are a few lines of
+		plain script, so the page needs no framework at runtime.
+	*/
+	const root = document.querySelector("[data-showcase]");
+
+	if (root) {
+		const sections = Array.from(root.querySelectorAll("[data-feature]"));
+		const glow = root.querySelector("[data-glow]");
+		const device = root.querySelector("[data-device]");
+		const colours = [
+			"#a855f7",
+			"#34d399",
+			"#60a5fa",
+			"#f472b6",
+			"#fbbf24",
+			"#2dd4bf",
+		];
+
+		let active = 0;
+
+		const setActive = (index) => {
+			if (index === active) return;
+			active = index;
+			root.setAttribute("data-active", String(index));
+			if (glow) glow.style.backgroundColor = colours[index];
+		};
+
+		const update = () => {
+			const middle = window.innerHeight / 2;
+			let best = Infinity;
+			let index = 0;
+			sections.forEach((section, i) => {
+				const distance = Math.abs(
+					section.getBoundingClientRect().top - middle,
+				);
+				if (distance < best) {
+					best = distance;
+					index = i;
+				}
+			});
+			setActive(index);
+		};
+
+		update();
+		window.addEventListener("scroll", update, { passive: true });
+		window.addEventListener("resize", update, { passive: true });
+
+		if (device && window.matchMedia("(pointer: fine)").matches) {
+			window.addEventListener(
+				"pointermove",
+				(event) => {
+					const x = event.clientX / window.innerWidth - 0.5;
+					const y = event.clientY / window.innerHeight - 0.5;
+					device.style.setProperty("--tilt-y", `${(x * 6).toFixed(2)}deg`);
+					device.style.setProperty("--tilt-x", `${(-y * 6).toFixed(2)}deg`);
+				},
+				{ passive: true },
+			);
+		}
+	}
+</script>

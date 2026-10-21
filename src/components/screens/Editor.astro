@@ -1,0 +1,117 @@
+---
+import { ICONS } from "../../lib/mockup-icons";
+
+/*
+ * The editor. The Paper theme's palette: a #121212 body, a #1E1E1E toolbar,
+ * and #AAAAAA for the secondary text.
+ */
+const slashItems = [
+	{ label: "Heading 1", icon: ICONS.heading1 },
+	{ label: "Bulleted list", icon: ICONS.list },
+	{ label: "Checklist", icon: ICONS.squareCheck },
+	{ label: "Callout", icon: ICONS.alert },
+	{ label: "Table", icon: ICONS.table },
+	{ label: "Code block", icon: ICONS.code },
+];
+
+const toolbar = [
+	{ icon: ICONS.undo, dim: true },
+	{ icon: ICONS.redo, dim: true },
+	{ separator: true },
+	{ icon: ICONS.sparkles },
+	{ separator: true },
+	{ icon: ICONS.paperclip },
+	{ icon: ICONS.brush },
+	{ separator: true },
+	{ icon: ICONS.bold },
+	{ icon: ICONS.italic },
+	{ icon: ICONS.underline },
+];
+---
+
+<div
+	class="h-full w-full flex flex-col overflow-hidden font-sans"
+	style="background-color:#121212"
+>
+	<!-- Header -->
+	<div class="flex items-center gap-1.5 px-2 pt-2.5 pb-1.5 shrink-0">
+		<div class="flex items-center gap-0.5 text-accent">
+			<Fragment set:html={ICONS.chevronLeft} />
+			<span class="text-[14px] -ml-1">Notes</span>
+		</div>
+		<div class="flex-1"></div>
+		<div
+			class="w-[19px] h-[19px] rounded-full border-[1.8px] border-accent flex items-center justify-center gap-[2px]"
+			aria-hidden="true"
+		>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+			<span class="w-[2.5px] h-[2.5px] rounded-full bg-accent"></span>
+		</div>
+	</div>
+
+	<div class="px-5 pt-3 flex-1 overflow-hidden">
+		<!-- The title is a placeholder in the app, and a paragraph here so
+		     the page keeps exactly one h1. -->
+		<p class="text-[26px] font-bold text-white tracking-tight">Title</p>
+		<p class="mt-3 text-[15px] text-[#8E8E93]">Start writing...</p>
+		<div class="mt-4 space-y-1.5 text-[13.5px] leading-[1.45]">
+			<p class="text-white">Fushimi Inari early, before the crowds.</p>
+			<p class="text-white">Arashiyama bamboo grove after lunch.</p>
+			<!-- A callout: the type's own accent, a 3px edge and a 10% tint. -->
+			<div
+				class="rounded-md border-l-[3px] pl-2.5 pr-2.5 py-2 my-1"
+				style="border-left-color:#4C8DFF;background-color:rgba(76,141,255,0.10);"
+			>
+				<div class="flex items-center gap-1.5 mb-1">
+					<Fragment set:html={ICONS.pencil} />
+					<p class="text-[11px] font-bold tracking-[0.3px] text-[#4C8DFF]">
+						Note
+					</p>
+				</div>
+				<p class="text-[12.5px] text-white">Matcha stand closes at 5pm.</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- The slash command menu, in the order the app lists it -->
+	<div
+		class="mx-2 mb-1 rounded-xl overflow-hidden border-t"
+		style="background-color:#1E1E1E;border-color:#2C2C2C;"
+	>
+		{
+			slashItems.map((item) => (
+				<div class="flex items-center gap-3 px-4 py-[9px]">
+					<span class="text-accent shrink-0">
+						<Fragment set:html={item.icon} />
+					</span>
+					<span class="text-[13px] text-white">{item.label}</span>
+				</div>
+			))
+		}
+	</div>
+
+	<!-- The formatting toolbar, in the app's order -->
+	<div
+		class="flex items-center gap-2 px-3 py-2.5 relative overflow-hidden"
+		style="background-color:#1E1E1E;border-top-width:1px;border-top-color:#2C2C2C;"
+	>
+		{
+			toolbar.map((item) =>
+				item.separator ? (
+					<span class="w-px h-[16px] bg-[#2C2C2C] shrink-0" />
+				) : (
+					<span
+						class:list={[
+							"shrink-0",
+							item.dim ? "text-[#3A3A3E]" : "text-white",
+						]}
+					>
+						<Fragment set:html={item.icon} />
+					</span>
+				),
+			)
+		}
+		<div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#1E1E1E] to-transparent"></div>
+	</div>
+</div>

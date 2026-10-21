@@ -35,7 +35,7 @@ const primitives = [
 ];
 ---
 
-<section id="security" class="relative py-24 md:py-32">
+<section id="security" class="relative py-24 md:py-32 defer-render">
 	<div
 		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(52,211,153,0.12),_transparent_60%)] pointer-events-none"
 	>
@@ -57,7 +57,7 @@ const primitives = [
 			</p>
 		</div>
 
-		<div class="mt-14 grid md:grid-cols-2 gap-5">
+		<div class="mt-14 grid grid-cols-1 md:grid-cols-2 gap-5">
 			{
 				primitives.map((item) => (
 					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">

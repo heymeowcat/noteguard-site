@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import FeatureGrid from "../components/FeatureGrid.astro";
-import FeatureShowcase from "../components/FeatureShowcase";
+import Showcase from "../components/Showcase.astro";
 import SecuritySection from "../components/SecuritySection.astro";
 import AISection from "../components/AISection.astro";
 import AndroidSection from "../components/AndroidSection.astro";
@@ -69,14 +69,14 @@ const faqData = {
 
 <Layout
 	title="NoteGuard — Private, offline notes with on-device AI"
-	description="NoteGuard is a private Android notes app. Notes are plain Markdown files in a folder you choose, locked notes are encrypted with the PIN you type, and every AI model runs on your device. No account, no cloud, no tracking."
+	description="A private Android notes app. Your notes are plain Markdown files in a folder you own, locked notes are encrypted with your PIN, and the AI runs on your device."
 	structuredData={[softwareData, faqData]}
 >
 	<main>
 		<Hero />
 		<FeatureGrid />
 		<section id="features" class="scroll-mt-16">
-			<FeatureShowcase client:load />
+			<Showcase />
 		</section>
 		<SecuritySection />
 		<AISection />

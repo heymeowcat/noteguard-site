@@ -1,0 +1,64 @@
+---
+import { ICONS } from "../../lib/mockup-icons";
+
+/*
+ * The Folders screen — the app's first screen. Every row is a card of its
+ * own, the icons are the accent colour, and the bottom bar carries a
+ * folder-plus, the count, and a new-note.
+ */
+---
+
+<div class="h-full w-full flex flex-col overflow-hidden font-sans bg-black">
+	<!-- Header: one icon, on the right -->
+	<div class="flex items-center px-2 pt-2.5 pb-1.5 shrink-0">
+		<div class="flex-1"></div>
+		<span class="text-accent"><Fragment set:html={ICONS.cog} /></span>
+	</div>
+
+	<div class="px-5 pt-1 pb-2 text-[27px] font-bold text-white tracking-tight">
+		Folders
+	</div>
+
+	<!-- The folders screen has its own search field -->
+	<div class="mx-4 flex items-center gap-2 rounded-xl bg-[#1C1C1E] px-3 h-[36px]">
+		<Fragment set:html={ICONS.magnify} />
+		<span class="text-[13.5px] text-[#8E8E93] truncate">Search</span>
+	</div>
+
+	<div class="px-5 pt-4 pb-1.5 text-[10px] font-semibold tracking-[0.6px] text-[#8E8E93]">
+		ON MY DEVICE
+	</div>
+
+	{
+		[
+			{ icon: ICONS.fileText, name: "Notes", count: "2" },
+			{ icon: ICONS.squareCheck, name: "Tasks", count: "2" },
+			{ icon: ICONS.trash, name: "Recently Deleted", count: "2" },
+		].map((row, index) => (
+			<div class:list={["mx-4 rounded-xl overflow-hidden bg-[#1C1C1E]", index > 0 && "mt-2.5"]}>
+				<div class="flex items-center gap-3.5 pl-4 pr-3.5 h-[52px]">
+					<span class="w-6 shrink-0 text-accent flex justify-center">
+						<Fragment set:html={row.icon} />
+					</span>
+					<span class="text-[15px] text-white tracking-[-0.15px] flex-1 truncate">
+						{row.name}
+					</span>
+					<span class="text-[14px] text-[#8E8E93] tabular-nums">{row.count}</span>
+					<Fragment set:html={ICONS.chevronRight} />
+				</div>
+			</div>
+		))
+	}
+
+	<!-- The glass bar -->
+	<div
+		class="mt-auto flex items-center justify-between px-5 py-2.5"
+		style="background-color:rgba(28,28,30,0.72);border-top-width:1px;border-top-color:rgba(255,255,255,0.18);"
+	>
+		<span class="w-6 text-accent"><Fragment set:html={ICONS.folderPlus} /></span>
+		<span class="flex-1 text-center text-[11.5px] text-[#8E8E93]">1 Folder</span>
+		<span class="w-6 text-accent flex justify-end">
+			<Fragment set:html={ICONS.squarePen} />
+		</span>
+	</div>
+</div>

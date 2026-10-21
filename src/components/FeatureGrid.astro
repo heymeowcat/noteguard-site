@@ -50,7 +50,7 @@ const groups = [
 ];
 ---
 
-<section id="overview" class="relative py-24 md:py-32">
+<section id="overview" class="relative py-24 md:py-32 defer-render">
 	<div
 		class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(168,85,247,0.12),_transparent_60%)] pointer-events-none"
 	>
@@ -71,7 +71,7 @@ const groups = [
 			</p>
 		</div>
 
-		<div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+		<div class="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 			{
 				groups.map((group) => (
 					<div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
