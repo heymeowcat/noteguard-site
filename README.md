@@ -65,8 +65,6 @@ src/
 │   ├── sitemap.xml.ts          # one hand-written sitemap
 │   └── whats-new.astro         # a redirect from the old address
 └── styles/global.css           # Tailwind theme tokens and the legal page styles
-
-docs/SEO.md                     # the search and link strategy
 ```
 
 ## Notes for editing
